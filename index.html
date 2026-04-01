@@ -1163,12 +1163,8 @@ function updateHeroCount() {
 }
 
 // ============ CONTENT LOCK ============
-function unlockContent() {
-    document.getElementById('contentLockWrapper').classList.remove('locked');
-}
-function lockContent() {
-    document.getElementById('contentLockWrapper').classList.add('locked');
-}
+function unlockContent() { /* no-op, content always visible */ }
+function lockContent() { /* no-op, content always visible */ }
 
 // ============ TABS ============
 function switchTab(tabName) {
