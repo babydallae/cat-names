@@ -45,17 +45,11 @@
             display: block;
         }
 
-        /* White overlay covers baked-in text on the image */
-        .hero-text-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 10;
+        /* Text section above the cat image */
+        .hero-top {
             text-align: center;
-            padding-top: 3%;
-            background: linear-gradient(to bottom, var(--white) 80%, transparent 100%);
-            padding-bottom: 8%;
+            padding: 24px 16px 12px;
+            background: var(--white);
         }
 
         .hero-logo {
@@ -63,14 +57,14 @@
             font-size: 18px;
             color: var(--black);
             letter-spacing: 2px;
-            margin-bottom: 2%;
+            margin-bottom: 8px;
         }
 
         .hero h1 {
             font-size: clamp(28px, 7vw, 42px);
             line-height: 1.3;
             text-align: center;
-            margin-bottom: 2%;
+            margin-bottom: 8px;
             color: var(--black);
         }
 
@@ -84,16 +78,13 @@
             font-weight: bold;
         }
 
-        /* Content on white chin area */
+        /* Content below the cat image */
         .hero-content {
-            position: absolute;
-            bottom: 18%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 15;
             text-align: center;
-            width: 70%;
-            max-width: 360px;
+            padding: 20px 16px 28px;
+            background: var(--white);
+            max-width: 420px;
+            margin: 0 auto;
         }
 
         .hero-content .flow-label {
@@ -153,11 +144,11 @@
             display: none;
             align-items: center;
             gap: 10px;
-            background: rgba(255,255,255,0.9);
+            background: var(--gray-light);
             border: 2px solid var(--black);
             border-radius: 14px;
             padding: 8px 14px;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
         }
         .hero-preview.show { display: flex; }
         .hero-preview img {
@@ -593,6 +584,51 @@
         .gallery-card .card-name { font-size: 16px; }
         .gallery-card .card-date { font-size: 11px; color: var(--gray-dark); margin-top: 2px; }
 
+        /* My cats section */
+        .my-cats-section {
+            background: var(--gray-light);
+            border: 2px solid var(--black);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .my-cats-section h3 {
+            font-family: 'Jua', sans-serif;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+        .my-cat-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--gray-mid);
+        }
+        .my-cat-row:last-child { border-bottom: none; }
+        .my-cat-row img {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--black);
+        }
+        .my-cat-info { flex: 1; }
+        .my-cat-info .mc-name { font-family: 'Jua', sans-serif; font-size: 17px; }
+        .my-cat-info .mc-date { font-size: 11px; color: var(--gray-dark); }
+        .my-cat-actions { display: flex; gap: 6px; }
+        .my-cat-actions button {
+            padding: 6px 12px;
+            border: 2px solid var(--black);
+            border-radius: 50px;
+            font-family: 'Jua', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            background: var(--white);
+            transition: all 0.2s;
+        }
+        .my-cat-actions button:hover { background: var(--black); color: var(--white); }
+        .my-cat-actions button.delete-btn { border-color: #cc4444; color: #cc4444; }
+        .my-cat-actions button.delete-btn:hover { background: #cc4444; color: var(--white); }
+
         .no-results { text-align: center; padding: 40px 16px; color: var(--gray-dark); }
         .no-results .emoji { font-size: 56px; margin-bottom: 12px; }
         .no-results p { font-family: 'Jua', sans-serif; font-size: 16px; }
@@ -631,11 +667,8 @@
 
 <!-- ========== HERO: Full-screen tuxedo cat face (SVG) ========== -->
 <section class="hero">
-    <!-- Cat face image from reference -->
-    <img class="cat-face-img" src="cat-face.png" alt="떼껄룩 작명소">
-
-    <!-- Text overlay -->
-    <div class="hero-text-overlay">
+    <!-- Text above cat image -->
+    <div class="hero-top">
         <div class="hero-logo">떼껄룩 작명소</div>
         <h1>우리 고양이 이름,<br>몇 마리나 쓸까?</h1>
         <div class="live-counter">
@@ -643,7 +676,10 @@
         </div>
     </div>
 
-    <!-- Content on white chin area -->
+    <!-- Cat face image -->
+    <img class="cat-face-img" src="cat-face.png?v=2" alt="떼껄룩 작명소">
+
+    <!-- Content below cat image -->
     <div class="hero-content">
         <div class="hero-preview" id="heroPreview">
             <img id="heroPreviewImg" src="" alt="">
@@ -759,6 +795,11 @@
 
     <!-- Tab 4: Gallery -->
     <div id="tab-gallery" class="tab-content">
+        <div class="my-cats-section" id="myCatsSection" style="display:none;">
+            <h3>🐱 내가 등록한 고양이</h3>
+            <div id="myCatsList"></div>
+        </div>
+
         <h2 class="section-title">🐾 우리 동네 친구들</h2>
         <div class="gallery-stats">
             <div class="gallery-stat">
@@ -956,6 +997,11 @@ function submitCat() {
     cats.unshift({ name, image: currentImageData, date: new Date().toISOString().slice(0, 10) });
     if (cats.length > 50) cats.length = 50;
     saveCats(cats);
+
+    // Track as my cat (index 0 since we unshifted)
+    let myIds = getMyCatIds().map(id => id + 1); // shift existing indices
+    myIds.unshift(0);
+    saveMyCatIds(myIds);
 
     // Set as "my cat" for this session
     myCat = { name, image: currentImageData };
@@ -1201,6 +1247,36 @@ function renderGallery() {
     document.getElementById('totalCats').textContent = cats.length;
     document.getElementById('totalNames').textContent = uniqueNames.size;
 
+    // My cats section
+    const myCatIds = getMyCatIds();
+    const myCats = cats.filter((c, i) => myCatIds.includes(i));
+    const myCatsSection = document.getElementById('myCatsSection');
+    const myCatsList = document.getElementById('myCatsList');
+
+    if (myCats.length > 0) {
+        myCatsSection.style.display = '';
+        myCatsList.innerHTML = myCatIds.map(idx => {
+            const cat = cats[idx];
+            if (!cat) return '';
+            return `
+                <div class="my-cat-row">
+                    <img src="${cat.image}" alt="${cat.name}">
+                    <div class="my-cat-info">
+                        <div class="mc-name">${cat.name}</div>
+                        <div class="mc-date">${cat.date}</div>
+                    </div>
+                    <div class="my-cat-actions">
+                        <button onclick="editMyCat(${idx})">사진 수정</button>
+                        <button class="delete-btn" onclick="deleteMyCat(${idx})">삭제</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } else {
+        myCatsSection.style.display = 'none';
+    }
+
+    // All cats gallery
     const gallery = document.getElementById('gallery');
     if (cats.length === 0) {
         gallery.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--gray-dark);">
@@ -1218,6 +1294,61 @@ function renderGallery() {
             </div>
         </div>
     `).join('');
+}
+
+// Track which cats are mine (by index in the cats array)
+function getMyCatIds() {
+    try { return JSON.parse(localStorage.getItem('nyang_my_ids') || '[]'); }
+    catch { return []; }
+}
+function saveMyCatIds(ids) { localStorage.setItem('nyang_my_ids', JSON.stringify(ids)); }
+
+function editMyCat(idx) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = e => {
+        if (!e.target.files.length) return;
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = ev => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const maxSize = 400;
+                let w = img.width, h = img.height;
+                if (w > h) { h = h * maxSize / w; w = maxSize; }
+                else { w = w * maxSize / h; h = maxSize; }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                const newImage = canvas.toDataURL('image/jpeg', 0.7);
+                const cats = getCats();
+                if (cats[idx]) {
+                    cats[idx].image = newImage;
+                    saveCats(cats);
+                    renderGallery();
+                    showToast('사진이 수정되었어요!');
+                }
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    };
+    input.click();
+}
+
+function deleteMyCat(idx) {
+    const cats = getCats();
+    if (!cats[idx]) return;
+    const name = cats[idx].name;
+    cats.splice(idx, 1);
+    saveCats(cats);
+    // Update my cat IDs (shift indices)
+    let myIds = getMyCatIds().filter(id => id !== idx).map(id => id > idx ? id - 1 : id);
+    saveMyCatIds(myIds);
+    updateHeroCount();
+    renderGallery();
+    showToast(`"${name}" 삭제되었어요`);
 }
 
 // ============ INIT ============
