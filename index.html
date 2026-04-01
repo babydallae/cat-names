@@ -151,26 +151,43 @@
             cursor: pointer;
         }
 
-        .hero-preview {
+        .hero-preview-list {
             display: none;
-            align-items: center;
-            gap: 10px;
-            background: var(--white);
-            border: 2px solid var(--black);
-            border-radius: 14px;
-            padding: 8px 14px;
-            margin-bottom: 8px;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 6px;
+            max-height: 120px;
+            overflow-y: auto;
         }
-        .hero-preview.show { display: flex; }
-        .hero-preview img {
-            width: 44px; height: 44px;
+        .hero-preview-list.show { display: flex; }
+        .hero-preview-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.95);
+            border: 2px solid var(--black);
+            border-radius: 12px;
+            padding: 5px 10px;
+        }
+        .hero-preview-item img {
+            width: 32px; height: 32px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--black);
         }
-        .hero-preview .preview-info { text-align: left; color: var(--black); }
-        .hero-preview .preview-name { font-family: 'Jua', sans-serif; font-size: 16px; }
-        .hero-preview .preview-status { font-size: 11px; color: var(--gray-dark); }
+        .hero-preview-item .hp-name { font-family: 'Jua', sans-serif; font-size: 14px; color: var(--black); flex: 1; }
+        .hero-preview-item .hp-status { font-size: 10px; color: var(--gray-dark); }
+        .hero-add-more {
+            background: none;
+            border: 2px dashed var(--gray-dark);
+            border-radius: 12px;
+            padding: 7px;
+            font-family: 'Jua', sans-serif;
+            font-size: 13px;
+            color: var(--gray-dark);
+            cursor: pointer;
+        }
+        .hero-add-more:hover { border-color: var(--black); color: var(--black); }
 
         /* ========== MY CAT CARD (below hero, above tabs) ========== */
         .my-cat-card {
@@ -817,13 +834,7 @@
 
         <!-- Content overlaid on the cat's white belly -->
         <div class="hero-content">
-            <div class="hero-preview" id="heroPreview">
-                <img id="heroPreviewImg" src="" alt="">
-                <div class="preview-info">
-                    <div class="preview-name" id="heroPreviewName"></div>
-                    <div class="preview-status">등록 완료!</div>
-                </div>
-            </div>
+            <div class="hero-preview-list" id="heroPreviewList"></div>
 
             <div class="flow-label" id="flowLabel">사진 올리고 동명이인 찾기</div>
 
@@ -1293,9 +1304,7 @@ function submitCat() {
     localStorage.setItem('nyang_my_cat', JSON.stringify(myCat));
 
     // Update hero
-    document.getElementById('heroPreviewImg').src = currentImageData;
-    document.getElementById('heroPreviewName').textContent = name;
-    document.getElementById('heroPreview').classList.add('show');
+    renderHeroPreview();
     document.getElementById('flowLabel').textContent = '동명이인 찾기';
     document.getElementById('heroUploadBtn').style.display = 'none';
     document.getElementById('heroSearchRow').classList.add('show');
@@ -1316,6 +1325,32 @@ function submitCat() {
 }
 
 // ============ MY CAT CARD (below hero) ============
+function renderHeroPreview() {
+    const cats = getCats();
+    const myIds = getMyCatIds();
+    const list = document.getElementById('heroPreviewList');
+
+    if (myIds.length === 0) {
+        list.classList.remove('show');
+        return;
+    }
+
+    let html = myIds.map(idx => {
+        const cat = cats[idx];
+        if (!cat) return '';
+        return `<div class="hero-preview-item">
+            <img src="${cat.image}" alt="${cat.name}">
+            <span class="hp-name">${cat.name}</span>
+            <span class="hp-status">등록 완료!</span>
+        </div>`;
+    }).filter(Boolean).join('');
+
+    html += `<button class="hero-add-more" onclick="openUploadModal()">+ 한 마리 더 등록하기</button>`;
+
+    list.innerHTML = html;
+    list.classList.add('show');
+}
+
 function renderMyCatCard() {
     const cats = getCats();
     const myCatIds = getMyCatIds();
@@ -1678,8 +1713,8 @@ function editMyCatWithCrop(idx) {
                     if (myCat && myCat.name === cats[idx].name) {
                         myCat.image = newImage;
                         localStorage.setItem('nyang_my_cat', JSON.stringify(myCat));
-                        document.getElementById('heroPreviewImg').src = newImage;
                     }
+                    renderHeroPreview();
                     renderMyCatCard();
                     renderGallery();
                     showSameNamePreview(cats[idx].name);
@@ -1710,16 +1745,26 @@ function deleteMyCat(idx) {
     renderMyCatCard();
     renderGallery();
 
+    renderHeroPreview();
+
     // If no more cats registered, lock content again and reset hero
     if (myIds.length === 0) {
         myCat = null;
         localStorage.removeItem('nyang_my_cat');
         lockContent();
-        document.getElementById('heroPreview').classList.remove('show');
+        document.getElementById('heroPreviewList').classList.remove('show');
         document.getElementById('flowLabel').textContent = '사진 올리고 동명이인 찾기';
         document.getElementById('heroUploadBtn').style.display = '';
         document.getElementById('heroSearchRow').classList.remove('show');
         document.getElementById('sameNamePreview').classList.remove('show');
+    } else {
+        // Update myCat to latest remaining cat
+        const cats = getCats();
+        const latestIdx = myIds[0];
+        if (cats[latestIdx]) {
+            myCat = { name: cats[latestIdx].name, image: cats[latestIdx].image };
+            localStorage.setItem('nyang_my_cat', JSON.stringify(myCat));
+        }
     }
     showToast(`"${name}" 삭제되었어요`);
 }
@@ -1758,9 +1803,7 @@ function restoreMyCat() {
 
     if (myCat) {
         // Restore hero state
-        document.getElementById('heroPreviewImg').src = myCat.image;
-        document.getElementById('heroPreviewName').textContent = myCat.name;
-        document.getElementById('heroPreview').classList.add('show');
+        renderHeroPreview();
         document.getElementById('flowLabel').textContent = '동명이인 찾기';
         document.getElementById('heroUploadBtn').style.display = 'none';
         document.getElementById('heroSearchRow').classList.add('show');
