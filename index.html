@@ -39,14 +39,14 @@
             overflow: hidden;
         }
 
-        /* Cat face image fills hero */
+        /* Cat face image - only show the cat part, not baked-in text */
         .cat-face-img {
             width: 100%;
             height: auto;
             display: block;
         }
 
-        /* Text overlay on top of SVG */
+        /* Black overlay covers baked-in text on the image */
         .hero-text-overlay {
             position: absolute;
             top: 0;
@@ -55,6 +55,9 @@
             z-index: 10;
             text-align: center;
             padding-top: 3%;
+            /* Solid black to cover image text, fades into the cat face */
+            background: linear-gradient(to bottom, var(--black) 85%, transparent 100%);
+            padding-bottom: 5%;
         }
 
         .hero-logo {
@@ -450,25 +453,42 @@
         }
         .pill.active { background: var(--black); color: var(--white); }
 
-        .name-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .name-tag {
-            display: inline-block;
-            padding: 10px 18px;
-            border: 2px solid var(--black);
-            border-radius: 50px;
-            font-size: 15px;
+        /* Recommend name list - readable rows */
+        .name-list { list-style: none; margin-bottom: 20px; }
+        .name-list-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--gray-mid);
             cursor: pointer;
-            transition: all 0.2s;
-            background: var(--white);
+            transition: background 0.2s;
+            gap: 12px;
+        }
+        .name-list-item:hover { background: var(--gray-light); }
+        .name-list-item:first-child { border-top: 1px solid var(--gray-mid); }
+        .name-list-name {
             font-family: 'Jua', sans-serif;
+            font-size: 20px;
+            min-width: 50px;
         }
-        .name-tag:hover, .name-tag.selected { background: var(--black); color: var(--white); }
-        .name-tag .sub {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-size: 11px; color: var(--gray-dark);
-            display: block; text-align: center; margin-top: 2px;
+        .name-list-meaning {
+            flex: 1;
+            font-size: 13px;
+            color: var(--gray-dark);
         }
-        .name-tag:hover .sub, .name-tag.selected .sub { color: var(--gray-mid); }
+        .name-list-count {
+            font-family: 'Jua', sans-serif;
+            font-size: 13px;
+            color: var(--gray-dark);
+            background: var(--gray-light);
+            padding: 4px 10px;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+        .name-list-arrow {
+            color: var(--gray-mid);
+            font-size: 16px;
+        }
 
         .suggest-form {
             background: var(--gray-light);
@@ -661,9 +681,10 @@
             <button class="pill" onclick="filterCategory('plant', this)">식물/나무</button>
             <button class="pill" onclick="filterCategory('grain', this)">곡물/열매</button>
             <button class="pill" onclick="filterCategory('food', this)">음식</button>
+            <button class="pill" onclick="filterCategory('etc', this)">기타</button>
         </div>
 
-        <div class="name-tags" id="recommendTags"></div>
+        <ul class="name-list" id="recommendTags"></ul>
 
         <div class="suggest-form">
             <h3>✏️ 이름 추천하기</h3>
@@ -681,6 +702,7 @@
                     <option value="plant">식물/나무</option>
                     <option value="grain">곡물/열매</option>
                     <option value="food">음식</option>
+                    <option value="etc">기타</option>
                 </select>
                 <button class="submit-btn" onclick="suggestNewName()" style="flex:1;background:var(--black);color:var(--white);border:none;border-radius:50px;padding:12px;font-family:'Jua',sans-serif;font-size:15px;cursor:pointer;">추천하기</button>
             </div>
@@ -721,45 +743,36 @@
 // No hardcoded cat names - all data comes from user registrations!
 
 const longevityNames = [
+    // 꽃
     { name: "장미", meaning: "사랑과 아름다움의 꽃", category: "flower" },
-    { name: "백합", meaning: "순수함을 상징하는 꽃", category: "flower" },
     { name: "동백", meaning: "겨울에 피는 붉은 꽃", category: "flower" },
     { name: "목련", meaning: "봄의 시작을 알리는 꽃", category: "flower" },
-    { name: "매화", meaning: "추위를 이기고 피는 꽃", category: "flower" },
-    { name: "국화", meaning: "가을의 대표 꽃", category: "flower" },
-    { name: "난초", meaning: "기품 있는 사군자 꽃", category: "flower" },
-    { name: "튤립", meaning: "사랑의 고백 꽃", category: "flower" },
     { name: "나리", meaning: "백합과의 예쁜 꽃", category: "flower" },
     { name: "찔레", meaning: "들장미, 소박한 아름다움", category: "flower" },
     { name: "앵두", meaning: "빨갛고 작은 꽃과 열매", category: "flower" },
     { name: "모란", meaning: "부귀영화를 상징하는 꽃", category: "flower" },
-    { name: "채송", meaning: "여름에 피는 알록달록 꽃", category: "flower" },
     { name: "수국", meaning: "여름비에 피는 꽃", category: "flower" },
     { name: "작약", meaning: "함박꽃, 화려한 봄꽃", category: "flower" },
-    { name: "꽃이", meaning: "예쁜 꽃 같은 아이에게", category: "flower" },
-    { name: "봉숙", meaning: "봉선화의 옛 이름", category: "flower" },
     { name: "해당", meaning: "해당화, 바닷가의 장미", category: "flower" },
+    // 나물/풀
     { name: "쑥이", meaning: "향긋한 봄나물", category: "herb" },
     { name: "냉이", meaning: "봄을 알리는 첫 번째 나물", category: "herb" },
     { name: "달래", meaning: "봄 향기 나는 작은 나물", category: "herb" },
-    { name: "부추", meaning: "향긋한 초록 나물", category: "herb" },
     { name: "더덕", meaning: "산속의 귀한 뿌리 나물", category: "herb" },
-    { name: "이끼", meaning: "바위 위의 초록 생명", category: "herb" },
     { name: "잔디", meaning: "들판의 부드러운 풀", category: "herb" },
     { name: "갈대", meaning: "바람에 흔들리는 물가 풀", category: "herb" },
     { name: "억새", meaning: "가을 들판의 풀", category: "herb" },
     { name: "미나", meaning: "미나리에서 따온 이름", category: "herb" },
     { name: "순이", meaning: "새순처럼 여린 느낌", category: "herb" },
-    { name: "비름", meaning: "여름에 자라는 나물", category: "herb" },
+    // 식물/나무
     { name: "솔이", meaning: "소나무처럼 늘 푸른", category: "plant" },
     { name: "솔잎", meaning: "소나무 잎, 사계절 푸른", category: "plant" },
     { name: "단풍", meaning: "가을을 붉게 물들이는 나무", category: "plant" },
-    { name: "은행", meaning: "노란 가을을 만드는 나무", category: "plant" },
     { name: "느티", meaning: "마을을 지키는 큰 나무", category: "plant" },
     { name: "자작", meaning: "하얀 껍질의 자작나무", category: "plant" },
     { name: "버들", meaning: "물가에 늘어진 버드나무", category: "plant" },
     { name: "새싹", meaning: "새로 나는 여린 싹", category: "plant" },
-    { name: "풀이", meaning: "초록초록 생명력 가득", category: "plant" },
+    // 곡물/열매
     { name: "보리", meaning: "건강한 곡물, 풍요의 상징", category: "grain" },
     { name: "콩이", meaning: "작고 동글동글한 곡물", category: "grain" },
     { name: "팥이", meaning: "붉은빛의 달콤한 곡물", category: "grain" },
@@ -773,20 +786,13 @@ const longevityNames = [
     { name: "수수", meaning: "붉은 곡물, 액운을 쫓는", category: "grain" },
     { name: "귀리", meaning: "건강한 곡물", category: "grain" },
     { name: "감이", meaning: "달콤한 가을 과일", category: "grain" },
-    { name: "비파", meaning: "달콤한 남쪽 열매", category: "grain" },
+    // 음식
     { name: "두부", meaning: "하얗고 부드러운 음식", category: "food" },
     { name: "감자", meaning: "통통하고 든든한 음식", category: "food" },
     { name: "떡이", meaning: "쫀득쫀득 한국의 대표 간식", category: "food" },
     { name: "경단", meaning: "동글동글 예쁜 떡", category: "food" },
-    { name: "약과", meaning: "달콤한 전통 과자", category: "food" },
-    { name: "송편", meaning: "반달 모양의 추석 떡", category: "food" },
     { name: "모찌", meaning: "말랑말랑 일본식 떡", category: "food" },
     { name: "강정", meaning: "달콤한 전통 간식", category: "food" },
-    { name: "식혜", meaning: "달콤한 전통 음료", category: "food" },
-    { name: "유과", meaning: "바삭한 전통 과자", category: "food" },
-    { name: "한과", meaning: "한국 전통 과자", category: "food" },
-    { name: "수정", meaning: "수정과, 겨울 음료", category: "food" },
-    { name: "다식", meaning: "예쁜 전통 과자", category: "food" },
 ];
 
 // ============ STATE ============
@@ -1055,18 +1061,34 @@ function getAllLongevityNames() {
 function renderRecommendations() {
     const all = getAllLongevityNames();
     const filtered = currentCategory === 'all' ? all : all.filter(n => n.category === currentCategory);
-    document.getElementById('recommendTags').innerHTML = filtered.map(n => `
-        <div class="name-tag" onclick="selectRecommendation('${n.name}','${n.meaning.replace(/'/g, "\\'")}')">
-            ${n.name}
-            <span class="sub">${n.meaning.length > 14 ? n.meaning.substring(0, 14) + '…' : n.meaning}</span>
-        </div>
-    `).join('');
+    const cats = getCats();
+
+    document.getElementById('recommendTags').innerHTML = filtered.map(n => {
+        const count = cats.filter(c => c.name === n.name).length;
+        const countLabel = count > 0 ? `${count}마리` : '';
+        return `
+            <li class="name-list-item" onclick="selectRecommendation('${n.name}','${n.meaning.replace(/'/g, "\\'")}')">
+                <span class="name-list-name">${n.name}</span>
+                <span class="name-list-meaning">${n.meaning}</span>
+                ${countLabel ? `<span class="name-list-count">${countLabel}</span>` : ''}
+                <span class="name-list-arrow">›</span>
+            </li>
+        `;
+    }).join('');
 }
 
 function selectRecommendation(name, meaning) {
     document.getElementById('randomResult').textContent = name;
     document.getElementById('randomMeaning').textContent = meaning;
     document.getElementById('searchInput').value = name;
+
+    // If registered cats exist with this name, show them
+    const cats = getCats();
+    const matching = cats.filter(c => c.name === name);
+    if (matching.length > 0 && myCat) {
+        searchName();
+        document.querySelector('main').scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 function randomName() {
