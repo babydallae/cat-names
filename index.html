@@ -276,47 +276,13 @@
             font-family: 'Jua', sans-serif;
         }
 
-        /* ========== LOCKED CONTENT OVERLAY ========== */
+        /* ========== CONTENT HIDDEN UNTIL REGISTERED ========== */
         .content-lock-wrapper {
             position: relative;
         }
-        .content-lock-wrapper.locked > main {
-            pointer-events: none;
-            user-select: none;
-            filter: blur(2px);
-            opacity: 0.4;
-        }
-        .lock-overlay {
+        .content-lock-wrapper.locked > main,
+        .content-lock-wrapper.locked > footer {
             display: none;
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 300px;
-            z-index: 50;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-        }
-        .content-lock-wrapper.locked .lock-overlay { display: flex; }
-        .lock-overlay-inner {
-            background: var(--white);
-            border: 3px solid var(--black);
-            border-radius: 20px;
-            padding: 28px 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        .lock-overlay-inner .lock-icon { font-size: 48px; margin-bottom: 8px; }
-        .lock-overlay-inner p {
-            font-family: 'Jua', sans-serif;
-            font-size: 18px;
-            color: var(--black);
-        }
-        .lock-overlay-inner .lock-sub {
-            font-size: 13px;
-            color: var(--gray-dark);
-            margin-top: 4px;
-            font-family: 'Noto Sans KR', sans-serif;
         }
 
         /* ========== UPLOAD MODAL ========== */
@@ -905,15 +871,8 @@
     </div>
 </div>
 
-<!-- ========== CONTENT LOCK WRAPPER ========== -->
+<!-- ========== CONTENT WRAPPER (hidden until registered) ========== -->
 <div class="content-lock-wrapper locked" id="contentLockWrapper">
-    <div class="lock-overlay">
-        <div class="lock-overlay-inner">
-            <div class="lock-icon">🔒</div>
-            <p>고양이를 등록하면 열려요!</p>
-            <div class="lock-sub">위에서 고양이 사진을 등록해주세요</div>
-        </div>
-    </div>
 
     <!-- ========== MAIN CONTENT ========== -->
     <main>
@@ -1785,6 +1744,15 @@ function restoreMyCat() {
                 myCat = { name: firstCat.name, image: firstCat.image };
                 localStorage.setItem('nyang_my_cat', JSON.stringify(myCat));
             }
+        }
+    }
+
+    // Final fallback: if cats exist in localStorage, user has registered before
+    if (!myCat) {
+        const cats = getCats();
+        if (cats.length > 0) {
+            myCat = { name: cats[0].name, image: cats[0].image };
+            localStorage.setItem('nyang_my_cat', JSON.stringify(myCat));
         }
     }
 
