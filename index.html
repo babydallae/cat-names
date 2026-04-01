@@ -404,10 +404,23 @@
         .crop-container.dragging { cursor: grabbing; }
         .crop-container img {
             position: absolute;
-            min-width: 100%;
-            min-height: 100%;
             user-select: none;
             -webkit-user-drag: none;
+            transform-origin: 0 0;
+        }
+        .crop-zoom {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin: 8px auto;
+            max-width: 250px;
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+        .crop-zoom.show { display: flex; }
+        .crop-zoom input[type="range"] {
+            flex: 1;
+            accent-color: var(--black);
         }
         .crop-hint {
             display: none;
@@ -917,7 +930,12 @@
         <div class="crop-container" id="cropContainer">
             <img id="cropImage" src="" alt="crop">
         </div>
-        <div class="crop-hint" id="cropHint">드래그해서 위치 조정</div>
+        <div class="crop-zoom" id="cropZoom">
+            <span>🔍−</span>
+            <input type="range" id="cropZoomSlider" min="100" max="300" value="100" oninput="applyCropZoom(this.value)">
+            <span>🔍+</span>
+        </div>
+        <div class="crop-hint" id="cropHint">드래그 + 확대/축소로 조정</div>
         <input type="text" id="catNameInput" placeholder="고양이 이름 (예: 나비)">
         <button class="modal-btn" id="modalSubmit" onclick="submitCat()" disabled>등록하고 동명이인 찾기!</button>
         <button class="modal-close" onclick="closeUploadModal()">닫기</button>
@@ -1144,8 +1162,9 @@ let cropState = {
     startY: 0,
     offsetX: 0,
     offsetY: 0,
-    imgWidth: 0,
-    imgHeight: 0,
+    imgWidth: 0,   // base display width (at scale=1)
+    imgHeight: 0,  // base display height (at scale=1)
+    scale: 1,
     containerSize: 250,
     rawImageSrc: null
 };
@@ -1200,8 +1219,11 @@ function openUploadModal() {
     document.getElementById('uploadModal').classList.add('show');
     currentImageData = null;
     cropState.rawImageSrc = null;
+    cropState.scale = 1;
     document.getElementById('cropContainer').classList.remove('show');
     document.getElementById('cropHint').classList.remove('show');
+    document.getElementById('cropZoom').classList.remove('show');
+    document.getElementById('cropZoomSlider').value = 100;
     document.getElementById('modalDrop').style.display = '';
     document.getElementById('catNameInput').value = '';
     document.getElementById('modalSubmit').disabled = true;
@@ -1256,8 +1278,11 @@ function handleFile(file) {
             cropState.imgHeight = displayH;
             cropState.rawImageSrc = e.target.result;
 
+            cropState.scale = 1;
             container.classList.add('show');
             document.getElementById('cropHint').classList.add('show');
+            document.getElementById('cropZoom').classList.add('show');
+            document.getElementById('cropZoomSlider').value = 100;
             document.getElementById('modalDrop').style.display = 'none';
 
             // Generate initial cropped image
@@ -1282,14 +1307,48 @@ function generateCroppedImage(sourceImg) {
     canvas.height = size;
     const ctx = canvas.getContext('2d');
 
-    // Calculate source rectangle from crop offsets
-    const scale = sourceImg.naturalWidth / cropState.imgWidth;
-    const sx = -cropState.offsetX * scale;
-    const sy = -cropState.offsetY * scale;
-    const sSize = cropState.containerSize * scale;
+    // Calculate source rectangle from crop offsets (accounting for zoom scale)
+    const imgScale = sourceImg.naturalWidth / (cropState.imgWidth * cropState.scale);
+    const sx = -cropState.offsetX * imgScale;
+    const sy = -cropState.offsetY * imgScale;
+    const sSize = cropState.containerSize * imgScale;
 
     ctx.drawImage(sourceImg, sx, sy, sSize, sSize, 0, 0, size, size);
     currentImageData = canvas.toDataURL('image/jpeg', 0.7);
+}
+
+function applyCropZoom(val) {
+    const newScale = val / 100;
+    const cropImg = document.getElementById('cropImage');
+    const oldScale = cropState.scale;
+    cropState.scale = newScale;
+
+    // Apply scale via CSS width/height
+    const newW = cropState.imgWidth * newScale;
+    const newH = cropState.imgHeight * newScale;
+    cropImg.style.width = newW + 'px';
+    cropImg.style.height = newH + 'px';
+
+    // Adjust offset to zoom toward center
+    const cs = cropState.containerSize;
+    const centerX = cs / 2;
+    const centerY = cs / 2;
+    cropState.offsetX = centerX - (centerX - cropState.offsetX) * (newScale / oldScale);
+    cropState.offsetY = centerY - (centerY - cropState.offsetY) * (newScale / oldScale);
+
+    // Clamp
+    const minX = cs - newW;
+    const minY = cs - newH;
+    cropState.offsetX = Math.min(0, Math.max(minX, cropState.offsetX));
+    cropState.offsetY = Math.min(0, Math.max(minY, cropState.offsetY));
+
+    cropImg.style.left = cropState.offsetX + 'px';
+    cropImg.style.top = cropState.offsetY + 'px';
+
+    // Regenerate cropped image
+    const img = new Image();
+    img.onload = () => generateCroppedImage(img);
+    img.src = cropState.rawImageSrc;
 }
 
 // Crop drag handlers
@@ -1307,11 +1366,13 @@ function initCropHandlers() {
         if (!cropState.isDragging) return;
         let newX = x - cropState.startX;
         let newY = y - cropState.startY;
-        // Clamp so image doesn't go out of bounds
+        // Clamp so image doesn't go out of bounds (accounting for scale)
+        const scaledW = cropState.imgWidth * cropState.scale;
+        const scaledH = cropState.imgHeight * cropState.scale;
         const maxX = 0;
         const maxY = 0;
-        const minX = cropState.containerSize - cropState.imgWidth;
-        const minY = cropState.containerSize - cropState.imgHeight;
+        const minX = cropState.containerSize - scaledW;
+        const minY = cropState.containerSize - scaledH;
         newX = Math.min(maxX, Math.max(minX, newX));
         newY = Math.min(maxY, Math.max(minY, newY));
         cropState.offsetX = newX;
@@ -1346,6 +1407,16 @@ function initCropHandlers() {
         moveDrag(t.clientX, t.clientY);
     }, { passive: false });
     document.addEventListener('touchend', endDrag);
+
+    // Wheel zoom
+    container.addEventListener('wheel', e => {
+        e.preventDefault();
+        const slider = document.getElementById('cropZoomSlider');
+        let val = parseInt(slider.value) + (e.deltaY < 0 ? 10 : -10);
+        val = Math.min(300, Math.max(100, val));
+        slider.value = val;
+        applyCropZoom(val);
+    }, { passive: false });
 }
 
 function checkModalReady() {
