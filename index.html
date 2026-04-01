@@ -39,8 +39,8 @@
             overflow: hidden;
         }
 
-        /* SVG cat face fills hero */
-        .cat-face-svg {
+        /* Cat face image fills hero */
+        .cat-face-img {
             width: 100%;
             height: auto;
             display: block;
@@ -569,67 +569,8 @@
 
 <!-- ========== HERO: Full-screen tuxedo cat face (SVG) ========== -->
 <section class="hero">
-    <!-- SVG Cat Face - traced from reference -->
-    <svg class="cat-face-svg" viewBox="0 0 420 750" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-        <!-- Black background -->
-        <rect width="420" height="750" fill="#1a1a1a"/>
-
-        <!-- Ears - organic curves at top corners -->
-        <path d="M0,0 L0,100 Q30,60 80,40 Q50,10 60,0 Z" fill="#2a2a2a"/>
-        <path d="M420,0 L420,100 Q390,60 340,40 Q370,10 360,0 Z" fill="#2a2a2a"/>
-
-        <!-- White patch - big rounded blob flowing down from center -->
-        <!-- Starts narrow between eyes, widens into round chin, flows to bottom -->
-        <path d="
-            M210,310
-            C180,310 155,340 140,370
-            Q110,420 100,470
-            Q85,530 80,580
-            Q75,640 90,700
-            Q100,740 120,750
-            L300,750
-            Q320,740 330,700
-            Q345,640 340,580
-            Q335,530 320,470
-            Q310,420 280,370
-            C265,340 240,310 210,310
-            Z
-        " fill="#ffffff"/>
-
-        <!-- Left eye - big and round -->
-        <circle cx="120" cy="385" r="58" fill="#e0d04a" stroke="#333" stroke-width="4"/>
-        <!-- Left pupil -->
-        <ellipse cx="120" cy="388" rx="22" ry="40" fill="#1a1a1a"/>
-        <!-- Left glint -->
-        <circle cx="135" cy="370" r="10" fill="white" opacity="0.9"/>
-
-        <!-- Right eye - big and round -->
-        <circle cx="300" cy="385" r="58" fill="#e0d04a" stroke="#333" stroke-width="4"/>
-        <!-- Right pupil -->
-        <ellipse cx="300" cy="388" rx="22" ry="40" fill="#1a1a1a"/>
-        <!-- Right glint -->
-        <circle cx="315" cy="370" r="10" fill="white" opacity="0.9"/>
-
-        <!-- Whisker dots -->
-        <circle cx="185" cy="460" r="5" fill="#1a1a1a"/>
-        <circle cx="195" cy="472" r="4" fill="#1a1a1a"/>
-        <circle cx="235" cy="460" r="5" fill="#1a1a1a"/>
-        <circle cx="225" cy="472" r="4" fill="#1a1a1a"/>
-
-        <!-- Nose - small pink/black -->
-        <ellipse cx="210" cy="448" rx="10" ry="7" fill="#ffaaaa"/>
-
-        <!-- Mouth - X shape -->
-        <line x1="195" y1="458" x2="210" y2="470" stroke="#ffaaaa" stroke-width="3" stroke-linecap="round"/>
-        <line x1="225" y1="458" x2="210" y2="470" stroke="#ffaaaa" stroke-width="3" stroke-linecap="round"/>
-        <line x1="210" y1="470" x2="200" y2="480" stroke="#ffaaaa" stroke-width="3" stroke-linecap="round"/>
-        <line x1="210" y1="470" x2="220" y2="480" stroke="#ffaaaa" stroke-width="3" stroke-linecap="round"/>
-
-        <!-- Black spots on white area near bottom -->
-        <ellipse cx="80" cy="700" rx="70" ry="55" fill="#1a1a1a"/>
-        <ellipse cx="350" cy="710" rx="60" ry="50" fill="#1a1a1a"/>
-        <ellipse cx="200" cy="740" rx="40" ry="25" fill="#1a1a1a" opacity="0.15"/>
-    </svg>
+    <!-- Cat face image from reference -->
+    <img class="cat-face-img" src="cat-face.png" alt="떼껄룩 작명소">
 
     <!-- Text overlay -->
     <div class="hero-text-overlay">
@@ -685,8 +626,8 @@
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('search')">동명이인</button>
         <button class="tab-btn" onclick="switchTab('ranking')">인기 순위</button>
-        <button class="tab-btn" onclick="switchTab('recommend')">장수 이름</button>
-        <button class="tab-btn" onclick="switchTab('gallery')">냥이 갤러리</button>
+        <button class="tab-btn" onclick="switchTab('recommend')">이름 추천</button>
+        <button class="tab-btn" onclick="switchTab('gallery')">친구들 보기</button>
     </div>
 
     <!-- Tab 1: Search / Same-name results -->
@@ -701,7 +642,7 @@
 
     <!-- Tab 2: Ranking -->
     <div id="tab-ranking" class="tab-content">
-        <h2 class="section-title">👑 한국 고양이 이름 인기 순위</h2>
+        <h2 class="section-title">👑 여기서 가장 많이 등록된 이름</h2>
         <ul class="ranking-list" id="rankingList"></ul>
     </div>
 
@@ -754,15 +695,15 @@
 
     <!-- Tab 4: Gallery -->
     <div id="tab-gallery" class="tab-content">
-        <h2 class="section-title">📸 등록된 냥이들</h2>
+        <h2 class="section-title">🐾 우리 동네 친구들</h2>
         <div class="gallery-stats">
             <div class="gallery-stat">
                 <div class="num" id="totalCats">0</div>
-                <div class="label">등록된 냥이</div>
+                <div class="label">마리</div>
             </div>
             <div class="gallery-stat">
                 <div class="num" id="totalNames">0</div>
-                <div class="label">고유 이름</div>
+                <div class="label">가지 이름</div>
             </div>
         </div>
         <div class="gallery" id="gallery"></div>
@@ -772,63 +713,12 @@
 <div class="toast" id="toast"></div>
 
 <footer>
-    떼껄룩 작명소 — 고양이 이름 동명이인 찾기 🐾<br>
-    데이터는 커뮤니티 통계 기반 추정치입니다
+    떼껄룩 작명소 — 고양이 이름 동명이인 찾기 🐾
 </footer>
 
 <script>
 // ============ DATA ============
-const catNames = [
-    { name: "나비", count: 870, desc: "가장 클래식한 고양이 이름" },
-    { name: "두부", count: 720, desc: "하얀 털 고양이에게 인기" },
-    { name: "콩이", count: 680, desc: "작고 동글한 아이에게 딱" },
-    { name: "치즈", count: 650, desc: "치즈태비 고양이의 대명사" },
-    { name: "모찌", count: 620, desc: "말랑말랑 귀여운 느낌" },
-    { name: "호두", count: 580, desc: "갈색 털 고양이에게 인기" },
-    { name: "밤이", count: 540, desc: "밤색 고양이의 단골 이름" },
-    { name: "망고", count: 520, desc: "노란 털 고양이에게 인기" },
-    { name: "보리", count: 510, desc: "곡물 이름, 장수 기원" },
-    { name: "까미", count: 490, desc: "까만 고양이의 대표 이름" },
-    { name: "깜이", count: 470, desc: "까미의 변형, 역시 인기" },
-    { name: "루루", count: 450, desc: "부르기 쉬운 반복 이름" },
-    { name: "코코", count: 430, desc: "세련된 느낌의 이름" },
-    { name: "솜이", count: 420, desc: "솜처럼 폭신한 장모종에게" },
-    { name: "구름", count: 410, desc: "흰 고양이에게 어울리는 이름" },
-    { name: "달이", count: 390, desc: "둥근 얼굴의 고양이에게" },
-    { name: "별이", count: 370, desc: "반짝이는 눈의 고양이에게" },
-    { name: "하루", count: 360, desc: "매일매일 소중한 의미" },
-    { name: "초코", count: 350, desc: "초콜릿색 고양이에게" },
-    { name: "감자", count: 340, desc: "통통한 고양이에게 딱" },
-    { name: "고구마", count: 320, desc: "감자의 친구, 달콤한 이름" },
-    { name: "미미", count: 310, desc: "고전적인 고양이 이름" },
-    { name: "누리", count: 300, desc: "세상을 뜻하는 순우리말" },
-    { name: "야옹이", count: 290, desc: "고양이 울음소리 그 자체" },
-    { name: "모카", count: 280, desc: "커피색 고양이에게" },
-    { name: "쿠키", count: 270, desc: "달콤한 과자 이름" },
-    { name: "복이", count: 260, desc: "복을 부르는 이름" },
-    { name: "냥이", count: 255, desc: "냥냥, 단순하고 귀여운" },
-    { name: "무무", count: 240, desc: "무의 반복, 부르기 쉬운" },
-    { name: "뽀뽀", count: 230, desc: "뽀뽀하고 싶은 아이에게" },
-    { name: "금이", count: 220, desc: "금빛 고양이에게" },
-    { name: "떡이", count: 210, desc: "떡처럼 쫀득한 느낌" },
-    { name: "팥이", count: 200, desc: "팥앙금 같은 갈색 고양이" },
-    { name: "쑥이", count: 190, desc: "쑥색(회녹색) 고양이에게" },
-    { name: "나루", count: 180, desc: "순우리말, 나루터의 나루" },
-    { name: "노을", count: 170, desc: "노을빛 털색의 고양이" },
-    { name: "하늘", count: 165, desc: "파란 눈의 고양이에게" },
-    { name: "뭉치", count: 160, desc: "뭉쳐있는 모습이 귀여운" },
-    { name: "삼색이", count: 155, desc: "삼색 고양이의 정석 이름" },
-    { name: "나리", count: 140, desc: "나리꽃에서 따온 이름" },
-    { name: "도토리", count: 135, desc: "작고 동글동글한 아이에게" },
-    { name: "라떼", count: 130, desc: "라떼 색상의 고양이" },
-    { name: "까망이", count: 125, desc: "까미의 풀네임 버전" },
-    { name: "하양이", count: 120, desc: "흰 고양이의 정석" },
-    { name: "노랑이", count: 115, desc: "노란 고양이 대표 이름" },
-    { name: "꽃이", count: 110, desc: "예쁜 꽃 같은 아이에게" },
-    { name: "봄이", count: 105, desc: "봄에 태어난 고양이" },
-    { name: "미르", count: 100, desc: "용을 뜻하는 순우리말" },
-    { name: "수리", count: 95, desc: "독수리의 수리, 멋진 이름" },
-];
+// No hardcoded cat names - all data comes from user registrations!
 
 const longevityNames = [
     { name: "장미", meaning: "사랑과 아름다움의 꽃", category: "flower" },
@@ -899,8 +789,6 @@ const longevityNames = [
     { name: "다식", meaning: "예쁜 전통 과자", category: "food" },
 ];
 
-const maxCount = catNames[0].count;
-
 // ============ STATE ============
 let currentImageData = null;
 let myCat = null; // { name, image }
@@ -932,6 +820,17 @@ function switchTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
     document.getElementById('tab-' + tabName).classList.add('active');
     if (tabName === 'gallery') renderGallery();
+    if (tabName === 'ranking') renderRanking();
+}
+
+// ============ NAME STATS (from registered cats) ============
+function getNameStats() {
+    const cats = getCats();
+    const counts = {};
+    cats.forEach(c => { counts[c.name] = (counts[c.name] || 0) + 1; });
+    return Object.entries(counts)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count);
 }
 
 // ============ UPLOAD MODAL ============
@@ -1047,48 +946,46 @@ function searchName() {
     }
 
     switchTab('search');
-    const results = catNames.filter(c => c.name.includes(query) || query.includes(c.name));
     const cats = getCats();
     const matchingCats = cats.filter(c => c.name === query);
+    const stats = getNameStats();
+    const totalCats = cats.length;
 
     const container = document.getElementById('searchResults');
 
-    // Your cat badge
     const badge = `<div class="your-cat-badge">
         <img src="${myCat.image}" alt="${myCat.name}">
         ${myCat.name}의 동명이인 찾기
     </div>`;
 
-    if (results.length === 0) {
+    if (matchingCats.length <= 1) {
         const longevityMatch = longevityNames.filter(n => n.name.includes(query) || query.includes(n.name));
-        let html = badge + `<div class="result-card">
+        container.innerHTML = badge + `<div class="result-card">
             <div class="result-name">${query}</div>
-            <div class="cat-count">${longevityMatch.length > 0
-                ? '인기 순위에는 없지만, 장수 이름이에요! 🌿'
-                : '아주 유니크한 이름! 동명이인이 거의 없어요 ✨'}</div>
+            <div class="cat-count">${matchingCats.length === 1
+                ? '아직 동명이인이 없어요! 유일한 ' + query + '이에요 ✨'
+                : '등록된 고양이가 없어요'}</div>
+            ${longevityMatch.length > 0 ? '<p style="margin-top:8px;font-size:13px;color:var(--gray-dark);">🌿 장수 이름이기도 해요!</p>' : ''}
         </div>`;
-        if (matchingCats.length > 1) html += renderSameNameSection(query, matchingCats);
-        container.innerHTML = html;
         return;
     }
 
-    container.innerHTML = badge + results.map((cat, i) => {
-        const rank = catNames.indexOf(cat) + 1;
-        const pct = (cat.count / maxCount * 100).toFixed(0);
-        const sameCats = cats.filter(c => c.name === cat.name);
+    // Found same-name cats!
+    const rank = stats.findIndex(s => s.name === query) + 1;
+    const maxCount = stats[0]?.count || 1;
+    const pct = (matchingCats.length / maxCount * 100).toFixed(0);
 
-        return `
-            <div class="result-card" style="animation-delay:${i * 0.1}s">
-                <div class="result-name">${cat.name}</div>
-                <div class="cat-count">추정 약 ${cat.count.toLocaleString()}마리 / 만 마리 중</div>
-                <div class="result-bar">
-                    <div class="result-bar-fill" style="width:${pct}%"></div>
-                </div>
-                <div class="result-rank">인기 ${rank}위 · ${cat.desc}</div>
-                ${sameCats.length > 0 ? renderSameNameSection(cat.name, sameCats) : ''}
+    container.innerHTML = badge + `
+        <div class="result-card">
+            <div class="result-name">${query}</div>
+            <div class="cat-count">${matchingCats.length}마리의 "${query}"가 있어요!</div>
+            <div class="result-bar">
+                <div class="result-bar-fill" style="width:${pct}%"></div>
             </div>
-        `;
-    }).join('');
+            <div class="result-rank">전체 ${totalCats}마리 중 ${rank}위 인기 이름</div>
+            ${renderSameNameSection(query, matchingCats)}
+        </div>
+    `;
 }
 
 function renderSameNameSection(name, cats) {
@@ -1113,7 +1010,19 @@ document.getElementById('searchInput').addEventListener('keydown', e => {
 
 // ============ RANKING ============
 function renderRanking() {
-    document.getElementById('rankingList').innerHTML = catNames.map((cat, i) => {
+    const stats = getNameStats();
+    const list = document.getElementById('rankingList');
+
+    if (stats.length === 0) {
+        list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--gray-dark);">
+            <p style="font-family:'Jua';font-size:16px;">아직 등록된 고양이가 없어요!</p>
+            <p style="font-size:13px;margin-top:6px;">고양이를 등록하면 인기 순위가 만들어져요 🐱</p>
+        </div>`;
+        return;
+    }
+
+    const maxCount = stats[0].count;
+    list.innerHTML = stats.map((cat, i) => {
         const pct = (cat.count / maxCount * 100).toFixed(0);
         return `
             <li class="ranking-item" onclick="document.getElementById('searchInput').value='${cat.name}';searchName();">
@@ -1228,7 +1137,6 @@ function renderGallery() {
 }
 
 // ============ INIT ============
-renderRanking();
 renderRecommendations();
 renderGallery();
 updateHeroCount();
