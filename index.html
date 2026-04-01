@@ -340,7 +340,7 @@
         }
         .content-lock-wrapper.locked > main,
         .content-lock-wrapper.locked > footer {
-            display: none;
+            /* No longer hidden - everyone can browse */
         }
 
         /* ========== UPLOAD MODAL ========== */
@@ -924,7 +924,7 @@
 </div>
 
 <!-- ========== CONTENT WRAPPER (hidden until registered) ========== -->
-<div class="content-lock-wrapper locked" id="contentLockWrapper">
+<div class="content-lock-wrapper" id="contentLockWrapper">
 
     <!-- ========== MAIN CONTENT ========== -->
     <main>
@@ -1172,8 +1172,6 @@ function lockContent() {
 
 // ============ TABS ============
 function switchTab(tabName) {
-    // Don't allow tab switch if locked
-    if (document.getElementById('contentLockWrapper').classList.contains('locked')) return;
     const tabs = ['search', 'ranking', 'recommend', 'gallery', 'mycat'];
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
         btn.classList.toggle('active', tabs[i] === tabName);
