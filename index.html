@@ -45,10 +45,10 @@
             display: block;
         }
 
-        /* Text section above the cat image */
+        /* Text section above the cat image - compact */
         .hero-top {
             text-align: center;
-            padding: 24px 16px 12px;
+            padding: 12px 16px 6px;
             background: var(--white);
         }
 
@@ -57,46 +57,55 @@
             font-size: 18px;
             color: var(--black);
             letter-spacing: 2px;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .hero h1 {
-            font-size: clamp(28px, 7vw, 42px);
-            line-height: 1.3;
+            font-size: clamp(24px, 6vw, 36px);
+            line-height: 1.2;
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
             color: var(--black);
         }
 
         .live-counter {
-            font-size: clamp(13px, 3vw, 16px);
+            font-size: clamp(12px, 2.8vw, 15px);
             color: var(--gray-dark);
         }
         .live-counter .count-num {
             color: var(--black);
-            font-size: clamp(15px, 3.5vw, 20px);
+            font-size: clamp(14px, 3.2vw, 18px);
             font-weight: bold;
         }
 
-        /* Content below the cat image */
+        /* Image wrapper for overlay positioning */
+        .hero-image-wrapper {
+            position: relative;
+        }
+
+        /* Content overlaid on the cat's belly area */
         .hero-content {
+            position: absolute;
+            bottom: 8%;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
-            padding: 20px 16px 28px;
-            background: var(--white);
+            width: 85%;
             max-width: 420px;
-            margin: 0 auto;
+            z-index: 10;
         }
 
         .hero-content .flow-label {
             color: var(--black);
             font-size: clamp(14px, 3.5vw, 18px);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
         }
 
         .hero-flow {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .hero-upload-btn {
@@ -109,6 +118,7 @@
             cursor: pointer;
             transition: transform 0.2s;
             width: 100%;
+            font-family: 'Jua', sans-serif;
         }
         .hero-upload-btn:hover { transform: scale(1.03); }
 
@@ -126,6 +136,7 @@
             font-size: 15px;
             font-family: 'Jua', sans-serif;
             outline: none;
+            background: var(--white);
         }
         .hero-search-row button {
             position: absolute;
@@ -144,11 +155,11 @@
             display: none;
             align-items: center;
             gap: 10px;
-            background: var(--gray-light);
+            background: var(--white);
             border: 2px solid var(--black);
             border-radius: 14px;
             padding: 8px 14px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .hero-preview.show { display: flex; }
         .hero-preview img {
@@ -161,26 +172,152 @@
         .hero-preview .preview-name { font-family: 'Jua', sans-serif; font-size: 16px; }
         .hero-preview .preview-status { font-size: 11px; color: var(--gray-dark); }
 
-        /* Black continuation below hero so scroll is seamless */
-        .hero-bottom-extend {
+        /* ========== MY CAT CARD (below hero, above tabs) ========== */
+        .my-cat-card {
+            display: none;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 16px 16px 0;
+        }
+        .my-cat-card.show { display: block; }
+        .my-cat-card-inner {
+            background: var(--gray-light);
+            border: 3px solid var(--black);
+            border-radius: 20px;
+            padding: 20px;
+        }
+        .my-cat-card-inner h3 {
+            font-family: 'Jua', sans-serif;
+            font-size: 18px;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        .my-cat-card-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .my-cat-card-row img {
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--black);
+            flex-shrink: 0;
+        }
+        .my-cat-card-info { flex: 1; }
+        .my-cat-card-info .mc-name {
+            font-family: 'Jua', sans-serif;
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+        .my-cat-card-info .mc-date {
+            font-size: 12px;
+            color: var(--gray-dark);
+        }
+        .my-cat-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .my-cat-card-actions button {
+            flex: 1;
+            padding: 8px 14px;
+            border: 2px solid var(--black);
+            border-radius: 50px;
+            font-family: 'Jua', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
             background: var(--white);
-            position: relative;
+            transition: all 0.2s;
+        }
+        .my-cat-card-actions button:hover { background: var(--black); color: var(--white); }
+        .my-cat-card-actions button.delete-btn { border-color: #cc4444; color: #cc4444; }
+        .my-cat-card-actions button.delete-btn:hover { background: #cc4444; color: var(--white); }
+
+        /* Same-name cats section below my cat card */
+        .same-name-preview {
+            display: none;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 2px solid var(--gray-mid);
+        }
+        .same-name-preview.show { display: block; }
+        .same-name-preview h4 {
+            font-family: 'Jua', sans-serif;
+            font-size: 15px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .same-name-preview-grid {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .same-name-preview-grid::-webkit-scrollbar { height: 4px; }
+        .same-name-preview-grid::-webkit-scrollbar-thumb { background: var(--gray-mid); border-radius: 2px; }
+        .same-name-preview-item {
+            flex-shrink: 0;
+            width: 70px;
+            text-align: center;
+        }
+        .same-name-preview-item img {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--black);
+        }
+        .same-name-preview-item .sn-label {
+            font-size: 11px;
+            color: var(--gray-dark);
+            margin-top: 3px;
+            font-family: 'Jua', sans-serif;
         }
 
-        /* Black spots on white area below cat face */
-        .body-spots {
+        /* ========== LOCKED CONTENT OVERLAY ========== */
+        .content-lock-wrapper {
             position: relative;
-            height: 120px;
-            overflow: hidden;
         }
-        .body-spot {
+        .content-lock-wrapper.locked > main {
+            pointer-events: none;
+            user-select: none;
+            filter: blur(2px);
+            opacity: 0.4;
+        }
+        .lock-overlay {
+            display: none;
             position: absolute;
-            background: var(--black);
-            border-radius: 50%;
+            top: 0; left: 0; right: 0;
+            height: 300px;
+            z-index: 50;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
         }
-        .body-spot-1 { width: 120px; height: 100px; bottom: -20px; left: -20px; border-radius: 60% 40% 50% 50%; }
-        .body-spot-2 { width: 100px; height: 80px; bottom: -10px; right: -10px; border-radius: 40% 60% 50% 50%; }
-        .body-spot-3 { width: 60px; height: 50px; bottom: 20px; left: 30%; border-radius: 50%; opacity: 0.3; }
+        .content-lock-wrapper.locked .lock-overlay { display: flex; }
+        .lock-overlay-inner {
+            background: var(--white);
+            border: 3px solid var(--black);
+            border-radius: 20px;
+            padding: 28px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .lock-overlay-inner .lock-icon { font-size: 48px; margin-bottom: 8px; }
+        .lock-overlay-inner p {
+            font-family: 'Jua', sans-serif;
+            font-size: 18px;
+            color: var(--black);
+        }
+        .lock-overlay-inner .lock-sub {
+            font-size: 13px;
+            color: var(--gray-dark);
+            margin-top: 4px;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
 
         /* ========== UPLOAD MODAL ========== */
         .modal-overlay {
@@ -225,6 +362,37 @@
         }
         .modal .upload-drop .icon { font-size: 40px; margin-bottom: 6px; }
         .modal .upload-drop p { font-family: 'Jua', sans-serif; font-size: 14px; color: var(--gray-dark); }
+
+        /* Crop container */
+        .crop-container {
+            display: none;
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 14px;
+            border-radius: 16px;
+            border: 2px solid var(--black);
+            overflow: hidden;
+            cursor: grab;
+            background: var(--gray-light);
+        }
+        .crop-container.show { display: block; }
+        .crop-container.dragging { cursor: grabbing; }
+        .crop-container img {
+            position: absolute;
+            min-width: 100%;
+            min-height: 100%;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        .crop-hint {
+            display: none;
+            font-size: 12px;
+            color: var(--gray-dark);
+            margin-bottom: 10px;
+            font-family: 'Jua', sans-serif;
+        }
+        .crop-hint.show { display: block; }
 
         .modal .preview-img {
             display: none;
@@ -584,7 +752,7 @@
         .gallery-card .card-name { font-size: 16px; }
         .gallery-card .card-date { font-size: 11px; color: var(--gray-dark); margin-top: 2px; }
 
-        /* My cats section */
+        /* My cats section in gallery tab */
         .my-cats-section {
             background: var(--gray-light);
             border: 2px solid var(--black);
@@ -652,7 +820,7 @@
 
         /* ===== MOBILE ===== */
         @media (max-width: 600px) {
-            .hero-content { bottom: 14%; width: 75%; }
+            .hero-content { bottom: 5%; width: 90%; }
             .tab-btn { font-size: 12px; padding: 10px 4px; }
             .rank-bar-container { flex: 1; }
             .ranking-item { padding: 10px 8px; gap: 10px; }
@@ -660,14 +828,15 @@
             .result-name { font-size: 24px; }
             .random-result { font-size: 36px; }
             .suggest-row { flex-direction: column; }
+            .crop-container { width: 200px; height: 200px; }
         }
     </style>
 </head>
 <body>
 
-<!-- ========== HERO: Full-screen tuxedo cat face (SVG) ========== -->
+<!-- ========== HERO: Full-screen tuxedo cat face ========== -->
 <section class="hero">
-    <!-- Text above cat image -->
+    <!-- Text above cat image - compact -->
     <div class="hero-top">
         <div class="hero-logo">떼껄룩 작명소</div>
         <h1>우리 고양이 이름,<br>몇 마리나 쓸까?</h1>
@@ -676,144 +845,172 @@
         </div>
     </div>
 
-    <!-- Cat face image -->
-    <img class="cat-face-img" src="cat-face.png?v=2" alt="떼껄룩 작명소">
+    <!-- Cat face image with overlay content on belly -->
+    <div class="hero-image-wrapper">
+        <img class="cat-face-img" src="cat-face.png?v=2" alt="떼껄룩 작명소">
 
-    <!-- Content below cat image -->
-    <div class="hero-content">
-        <div class="hero-preview" id="heroPreview">
-            <img id="heroPreviewImg" src="" alt="">
-            <div class="preview-info">
-                <div class="preview-name" id="heroPreviewName"></div>
-                <div class="preview-status">등록 완료!</div>
+        <!-- Content overlaid on the cat's white belly -->
+        <div class="hero-content">
+            <div class="hero-preview" id="heroPreview">
+                <img id="heroPreviewImg" src="" alt="">
+                <div class="preview-info">
+                    <div class="preview-name" id="heroPreviewName"></div>
+                    <div class="preview-status">등록 완료!</div>
+                </div>
             </div>
-        </div>
 
-        <div class="flow-label" id="flowLabel">사진 올리고 동명이인 찾기</div>
+            <div class="flow-label" id="flowLabel">사진 올리고 동명이인 찾기</div>
 
-        <div class="hero-flow">
-            <button class="hero-upload-btn" id="heroUploadBtn" onclick="openUploadModal()">
-                📷 내 고양이 등록하기
-            </button>
-            <div class="hero-search-row" id="heroSearchRow">
-                <input type="text" id="searchInput" placeholder="이름을 입력하고 동명이인 찾기" autocomplete="off">
-                <button onclick="searchName()">🔍</button>
+            <div class="hero-flow">
+                <button class="hero-upload-btn" id="heroUploadBtn" onclick="openUploadModal()">
+                    내 고양이 등록하기
+                </button>
+                <div class="hero-search-row" id="heroSearchRow">
+                    <input type="text" id="searchInput" placeholder="이름을 입력하고 동명이인 찾기" autocomplete="off">
+                    <button onclick="searchName()">🔍</button>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- ========== MY CAT CARD (visible after registration) ========== -->
+<div class="my-cat-card" id="myCatCard">
+    <div class="my-cat-card-inner">
+        <h3>내 고양이</h3>
+        <div id="myCatCardContent"></div>
+        <div class="same-name-preview" id="sameNamePreview">
+            <h4 id="sameNamePreviewTitle"></h4>
+            <div class="same-name-preview-grid" id="sameNamePreviewGrid"></div>
+        </div>
+    </div>
+</div>
+
 <!-- ========== UPLOAD MODAL ========== -->
 <div class="modal-overlay" id="uploadModal">
     <div class="modal">
-        <h2>📷 내 고양이 등록</h2>
+        <h2>내 고양이 등록</h2>
         <div class="upload-drop" id="modalDrop" onclick="document.getElementById('fileInput').click()">
             <div class="icon">🐱</div>
             <p>사진을 선택하세요</p>
         </div>
         <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
-        <img class="preview-img" id="modalPreview" src="" alt="미리보기">
+        <div class="crop-container" id="cropContainer">
+            <img id="cropImage" src="" alt="crop">
+        </div>
+        <div class="crop-hint" id="cropHint">드래그해서 위치 조정</div>
         <input type="text" id="catNameInput" placeholder="고양이 이름 (예: 나비)">
         <button class="modal-btn" id="modalSubmit" onclick="submitCat()" disabled>등록하고 동명이인 찾기!</button>
         <button class="modal-close" onclick="closeUploadModal()">닫기</button>
     </div>
 </div>
 
-<!-- ========== MAIN CONTENT ========== -->
-<main>
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('search')">동명이인</button>
-        <button class="tab-btn" onclick="switchTab('ranking')">인기 순위</button>
-        <button class="tab-btn" onclick="switchTab('recommend')">이름 추천</button>
-        <button class="tab-btn" onclick="switchTab('gallery')">친구들 보기</button>
-    </div>
-
-    <!-- Tab 1: Search / Same-name results -->
-    <div id="tab-search" class="tab-content active">
-        <div id="searchResults">
-            <div class="no-results">
-                <div class="emoji">🐱</div>
-                <p>위에서 고양이를 등록하면<br>동명이인을 찾아드려요!</p>
-            </div>
+<!-- ========== CONTENT LOCK WRAPPER ========== -->
+<div class="content-lock-wrapper locked" id="contentLockWrapper">
+    <div class="lock-overlay">
+        <div class="lock-overlay-inner">
+            <div class="lock-icon">🔒</div>
+            <p>고양이를 등록하면 열려요!</p>
+            <div class="lock-sub">위에서 고양이 사진을 등록해주세요</div>
         </div>
     </div>
 
-    <!-- Tab 2: Ranking -->
-    <div id="tab-ranking" class="tab-content">
-        <h2 class="section-title">👑 여기서 가장 많이 등록된 이름</h2>
-        <ul class="ranking-list" id="rankingList"></ul>
-    </div>
-
-    <!-- Tab 3: Recommend -->
-    <div id="tab-recommend" class="tab-content">
-        <div class="superstition-banner">
-            <h3>🌿 먹는 이름을 지으면 오래 산다!</h3>
-            <p>옛날부터 동물에게 음식, 곡물, 식물 이름을 지어주면<br>
-            오래오래 건강하게 산다는 속설이 있어요.</p>
+    <!-- ========== MAIN CONTENT ========== -->
+    <main>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('search')">동명이인</button>
+            <button class="tab-btn" onclick="switchTab('ranking')">인기 순위</button>
+            <button class="tab-btn" onclick="switchTab('recommend')">이름 추천</button>
+            <button class="tab-btn" onclick="switchTab('gallery')">친구들 보기</button>
         </div>
 
-        <div class="category-pills">
-            <button class="pill active" onclick="filterCategory('all', this)">전체</button>
-            <button class="pill" onclick="filterCategory('flower', this)">꽃</button>
-            <button class="pill" onclick="filterCategory('herb', this)">나물/풀</button>
-            <button class="pill" onclick="filterCategory('plant', this)">식물/나무</button>
-            <button class="pill" onclick="filterCategory('grain', this)">곡물/열매</button>
-            <button class="pill" onclick="filterCategory('food', this)">음식</button>
-            <button class="pill" onclick="filterCategory('etc', this)">기타</button>
-        </div>
-
-        <ul class="name-list" id="recommendTags"></ul>
-
-        <div class="suggest-form">
-            <h3>✏️ 이름 추천하기</h3>
-            <p style="font-size:13px;color:var(--gray-dark);margin-bottom:12px;">
-                좋은 장수 이름을 알고 있나요? 추천해주세요!
-            </p>
-            <div class="suggest-row">
-                <input type="text" id="suggestName" placeholder="이름 (예: 솔이)" maxlength="10">
-                <input type="text" id="suggestMeaning" placeholder="뜻 (예: 소나무처럼 강한)">
-            </div>
-            <div class="suggest-row">
-                <select id="suggestCategory">
-                    <option value="flower">꽃</option>
-                    <option value="herb">나물/풀</option>
-                    <option value="plant">식물/나무</option>
-                    <option value="grain">곡물/열매</option>
-                    <option value="food">음식</option>
-                    <option value="etc">기타</option>
-                </select>
-                <button class="submit-btn" onclick="suggestNewName()" style="flex:1;background:var(--black);color:var(--white);border:none;border-radius:50px;padding:12px;font-family:'Jua',sans-serif;font-size:15px;cursor:pointer;">추천하기</button>
+        <!-- Tab 1: Search / Same-name results -->
+        <div id="tab-search" class="tab-content active">
+            <div id="searchResults">
+                <div class="no-results">
+                    <div class="emoji">🐱</div>
+                    <p>위에서 고양이를 등록하면<br>동명이인을 찾아드려요!</p>
+                </div>
             </div>
         </div>
 
-        <div class="random-section">
-            <button class="random-btn" onclick="randomName()">🎲 랜덤 이름 뽑기</button>
-            <div class="random-result" id="randomResult"></div>
-            <div class="random-meaning" id="randomMeaning"></div>
-        </div>
-    </div>
-
-    <!-- Tab 4: Gallery -->
-    <div id="tab-gallery" class="tab-content">
-        <div class="my-cats-section" id="myCatsSection" style="display:none;">
-            <h3>🐱 내가 등록한 고양이</h3>
-            <div id="myCatsList"></div>
+        <!-- Tab 2: Ranking -->
+        <div id="tab-ranking" class="tab-content">
+            <h2 class="section-title">👑 여기서 가장 많이 등록된 이름</h2>
+            <ul class="ranking-list" id="rankingList"></ul>
         </div>
 
-        <h2 class="section-title">🐾 우리 동네 친구들</h2>
-        <div class="gallery-stats">
-            <div class="gallery-stat">
-                <div class="num" id="totalCats">0</div>
-                <div class="label">마리</div>
+        <!-- Tab 3: Recommend -->
+        <div id="tab-recommend" class="tab-content">
+            <div class="superstition-banner">
+                <h3>🌿 먹는 이름을 지으면 오래 산다!</h3>
+                <p>옛날부터 동물에게 음식, 곡물, 식물 이름을 지어주면<br>
+                오래오래 건강하게 산다는 속설이 있어요.</p>
             </div>
-            <div class="gallery-stat">
-                <div class="num" id="totalNames">0</div>
-                <div class="label">가지 이름</div>
+
+            <div class="category-pills">
+                <button class="pill active" onclick="filterCategory('all', this)">전체</button>
+                <button class="pill" onclick="filterCategory('flower', this)">꽃</button>
+                <button class="pill" onclick="filterCategory('herb', this)">나물/풀</button>
+                <button class="pill" onclick="filterCategory('plant', this)">식물/나무</button>
+                <button class="pill" onclick="filterCategory('grain', this)">곡물/열매</button>
+                <button class="pill" onclick="filterCategory('food', this)">음식</button>
+                <button class="pill" onclick="filterCategory('etc', this)">기타</button>
+            </div>
+
+            <ul class="name-list" id="recommendTags"></ul>
+
+            <div class="suggest-form">
+                <h3>이름 추천하기</h3>
+                <p style="font-size:13px;color:var(--gray-dark);margin-bottom:12px;">
+                    좋은 장수 이름을 알고 있나요? 추천해주세요!
+                </p>
+                <div class="suggest-row">
+                    <input type="text" id="suggestName" placeholder="이름 (예: 솔이)" maxlength="10">
+                    <input type="text" id="suggestMeaning" placeholder="뜻 (예: 소나무처럼 강한)">
+                </div>
+                <div class="suggest-row">
+                    <select id="suggestCategory">
+                        <option value="flower">꽃</option>
+                        <option value="herb">나물/풀</option>
+                        <option value="plant">식물/나무</option>
+                        <option value="grain">곡물/열매</option>
+                        <option value="food">음식</option>
+                        <option value="etc">기타</option>
+                    </select>
+                    <button class="submit-btn" onclick="suggestNewName()" style="flex:1;background:var(--black);color:var(--white);border:none;border-radius:50px;padding:12px;font-family:'Jua',sans-serif;font-size:15px;cursor:pointer;">추천하기</button>
+                </div>
+            </div>
+
+            <div class="random-section">
+                <button class="random-btn" onclick="randomName()">🎲 랜덤 이름 뽑기</button>
+                <div class="random-result" id="randomResult"></div>
+                <div class="random-meaning" id="randomMeaning"></div>
             </div>
         </div>
-        <div class="gallery" id="gallery"></div>
-    </div>
-</main>
+
+        <!-- Tab 4: Gallery -->
+        <div id="tab-gallery" class="tab-content">
+            <div class="my-cats-section" id="myCatsSection" style="display:none;">
+                <h3>🐱 내가 등록한 고양이</h3>
+                <div id="myCatsList"></div>
+            </div>
+
+            <h2 class="section-title">🐾 우리 동네 친구들</h2>
+            <div class="gallery-stats">
+                <div class="gallery-stat">
+                    <div class="num" id="totalCats">0</div>
+                    <div class="label">마리</div>
+                </div>
+                <div class="gallery-stat">
+                    <div class="num" id="totalNames">0</div>
+                    <div class="label">가지 이름</div>
+                </div>
+            </div>
+            <div class="gallery" id="gallery"></div>
+        </div>
+    </main>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -882,6 +1079,19 @@ const longevityNames = [
 let currentImageData = null;
 let myCat = null; // { name, image }
 
+// ============ CROP STATE ============
+let cropState = {
+    isDragging: false,
+    startX: 0,
+    startY: 0,
+    offsetX: 0,
+    offsetY: 0,
+    imgWidth: 0,
+    imgHeight: 0,
+    containerSize: 250,
+    rawImageSrc: null
+};
+
 // ============ HELPERS ============
 function showToast(msg) {
     const t = document.getElementById('toast');
@@ -900,8 +1110,18 @@ function updateHeroCount() {
     document.getElementById('heroCount').textContent = getCats().length;
 }
 
+// ============ CONTENT LOCK ============
+function unlockContent() {
+    document.getElementById('contentLockWrapper').classList.remove('locked');
+}
+function lockContent() {
+    document.getElementById('contentLockWrapper').classList.add('locked');
+}
+
 // ============ TABS ============
 function switchTab(tabName) {
+    // Don't allow tab switch if locked
+    if (document.getElementById('contentLockWrapper').classList.contains('locked')) return;
     const tabs = ['search', 'ranking', 'recommend', 'gallery'];
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
         btn.classList.toggle('active', tabs[i] === tabName);
@@ -926,7 +1146,9 @@ function getNameStats() {
 function openUploadModal() {
     document.getElementById('uploadModal').classList.add('show');
     currentImageData = null;
-    document.getElementById('modalPreview').classList.remove('show');
+    cropState.rawImageSrc = null;
+    document.getElementById('cropContainer').classList.remove('show');
+    document.getElementById('cropHint').classList.remove('show');
     document.getElementById('modalDrop').style.display = '';
     document.getElementById('catNameInput').value = '';
     document.getElementById('modalSubmit').disabled = true;
@@ -951,22 +1173,126 @@ function handleFile(file) {
     reader.onload = e => {
         const img = new Image();
         img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const maxSize = 400;
-            let w = img.width, h = img.height;
-            if (w > h) { h = h * maxSize / w; w = maxSize; }
-            else { w = w * maxSize / h; h = maxSize; }
-            canvas.width = w; canvas.height = h;
-            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            currentImageData = canvas.toDataURL('image/jpeg', 0.7);
-            document.getElementById('modalPreview').src = currentImageData;
-            document.getElementById('modalPreview').classList.add('show');
+            // Show crop UI
+            const container = document.getElementById('cropContainer');
+            const cropImg = document.getElementById('cropImage');
+            const containerSize = container.offsetWidth || 250;
+            cropState.containerSize = containerSize;
+
+            // Scale image so smaller dimension fills the container
+            let displayW, displayH;
+            if (img.width > img.height) {
+                displayH = containerSize;
+                displayW = (img.width / img.height) * containerSize;
+            } else {
+                displayW = containerSize;
+                displayH = (img.height / img.width) * containerSize;
+            }
+
+            cropImg.src = e.target.result;
+            cropImg.style.width = displayW + 'px';
+            cropImg.style.height = displayH + 'px';
+
+            // Center the image
+            cropState.offsetX = -(displayW - containerSize) / 2;
+            cropState.offsetY = -(displayH - containerSize) / 2;
+            cropImg.style.left = cropState.offsetX + 'px';
+            cropImg.style.top = cropState.offsetY + 'px';
+
+            cropState.imgWidth = displayW;
+            cropState.imgHeight = displayH;
+            cropState.rawImageSrc = e.target.result;
+
+            container.classList.add('show');
+            document.getElementById('cropHint').classList.add('show');
             document.getElementById('modalDrop').style.display = 'none';
+
+            // Generate initial cropped image
+            generateCroppedImage(img);
             checkModalReady();
         };
         img.src = e.target.result;
     };
     reader.readAsDataURL(file);
+}
+
+function generateCroppedImage(sourceImg) {
+    if (!sourceImg && cropState.rawImageSrc) {
+        sourceImg = new Image();
+        sourceImg.src = cropState.rawImageSrc;
+    }
+    if (!sourceImg) return;
+
+    const canvas = document.createElement('canvas');
+    const size = 400; // output size
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+
+    // Calculate source rectangle from crop offsets
+    const scale = sourceImg.naturalWidth / cropState.imgWidth;
+    const sx = -cropState.offsetX * scale;
+    const sy = -cropState.offsetY * scale;
+    const sSize = cropState.containerSize * scale;
+
+    ctx.drawImage(sourceImg, sx, sy, sSize, sSize, 0, 0, size, size);
+    currentImageData = canvas.toDataURL('image/jpeg', 0.7);
+}
+
+// Crop drag handlers
+function initCropHandlers() {
+    const container = document.getElementById('cropContainer');
+    const cropImg = document.getElementById('cropImage');
+
+    function startDrag(x, y) {
+        cropState.isDragging = true;
+        cropState.startX = x - cropState.offsetX;
+        cropState.startY = y - cropState.offsetY;
+        container.classList.add('dragging');
+    }
+    function moveDrag(x, y) {
+        if (!cropState.isDragging) return;
+        let newX = x - cropState.startX;
+        let newY = y - cropState.startY;
+        // Clamp so image doesn't go out of bounds
+        const maxX = 0;
+        const maxY = 0;
+        const minX = cropState.containerSize - cropState.imgWidth;
+        const minY = cropState.containerSize - cropState.imgHeight;
+        newX = Math.min(maxX, Math.max(minX, newX));
+        newY = Math.min(maxY, Math.max(minY, newY));
+        cropState.offsetX = newX;
+        cropState.offsetY = newY;
+        cropImg.style.left = newX + 'px';
+        cropImg.style.top = newY + 'px';
+    }
+    function endDrag() {
+        if (!cropState.isDragging) return;
+        cropState.isDragging = false;
+        container.classList.remove('dragging');
+        // Regenerate cropped image
+        const img = new Image();
+        img.onload = () => generateCroppedImage(img);
+        img.src = cropState.rawImageSrc;
+    }
+
+    // Mouse events
+    container.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX, e.clientY); });
+    document.addEventListener('mousemove', e => moveDrag(e.clientX, e.clientY));
+    document.addEventListener('mouseup', endDrag);
+
+    // Touch events
+    container.addEventListener('touchstart', e => {
+        e.preventDefault();
+        const t = e.touches[0];
+        startDrag(t.clientX, t.clientY);
+    }, { passive: false });
+    document.addEventListener('touchmove', e => {
+        if (!cropState.isDragging) return;
+        const t = e.touches[0];
+        moveDrag(t.clientX, t.clientY);
+    }, { passive: false });
+    document.addEventListener('touchend', endDrag);
 }
 
 function checkModalReady() {
@@ -1003,8 +1329,9 @@ function submitCat() {
     myIds.unshift(0);
     saveMyCatIds(myIds);
 
-    // Set as "my cat" for this session
+    // Set as "my cat" for this session and persist
     myCat = { name, image: currentImageData };
+    localStorage.setItem('nyang_my_cat', JSON.stringify(myCat));
 
     // Update hero
     document.getElementById('heroPreviewImg').src = currentImageData;
@@ -1017,14 +1344,71 @@ function submitCat() {
 
     closeUploadModal();
     updateHeroCount();
+    unlockContent();
+    renderMyCatCard();
     renderGallery();
-    showToast(`"${name}" 등록 완료! 동명이인을 찾아보세요!`);
+    showToast(`"${name}" 등록 완료!`);
 
-    // Auto search
+    // Auto search and show same-name cats
     setTimeout(() => {
         searchName();
-        document.querySelector('main').scrollIntoView({ behavior: 'smooth' });
-    }, 600);
+        showSameNamePreview(name);
+    }, 400);
+}
+
+// ============ MY CAT CARD (below hero) ============
+function renderMyCatCard() {
+    const cats = getCats();
+    const myCatIds = getMyCatIds();
+    const myCatCardEl = document.getElementById('myCatCard');
+    const contentEl = document.getElementById('myCatCardContent');
+
+    if (myCatIds.length === 0 || !myCat) {
+        myCatCardEl.classList.remove('show');
+        return;
+    }
+
+    myCatCardEl.classList.add('show');
+
+    contentEl.innerHTML = myCatIds.map(idx => {
+        const cat = cats[idx];
+        if (!cat) return '';
+        return `
+            <div class="my-cat-card-row">
+                <img src="${cat.image}" alt="${cat.name}">
+                <div class="my-cat-card-info">
+                    <div class="mc-name">${cat.name}</div>
+                    <div class="mc-date">${cat.date}</div>
+                </div>
+            </div>
+            <div class="my-cat-card-actions">
+                <button onclick="editMyCatWithCrop(${idx})">사진 수정</button>
+                <button class="delete-btn" onclick="deleteMyCat(${idx})">삭제</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function showSameNamePreview(name) {
+    const cats = getCats();
+    const matching = cats.filter(c => c.name === name);
+    const previewEl = document.getElementById('sameNamePreview');
+    const titleEl = document.getElementById('sameNamePreviewTitle');
+    const gridEl = document.getElementById('sameNamePreviewGrid');
+
+    if (matching.length <= 1) {
+        titleEl.textContent = `"${name}" 은(는) 유일한 이름이에요!`;
+        gridEl.innerHTML = '<p style="font-size:13px;color:var(--gray-dark);text-align:center;">아직 동명이인이 없어요</p>';
+    } else {
+        titleEl.textContent = `"${name}" 동명이인 ${matching.length}마리`;
+        gridEl.innerHTML = matching.map(c => `
+            <div class="same-name-preview-item">
+                <img src="${c.image}" alt="${c.name}" loading="lazy">
+                <div class="sn-label">${c.name}</div>
+            </div>
+        `).join('');
+    }
+    previewEl.classList.add('show');
 }
 
 // ============ SEARCH ============
@@ -1034,7 +1418,7 @@ function searchName() {
 
     // Must register first
     if (!myCat) {
-        showToast('먼저 고양이를 등록해주세요! 📷');
+        showToast('먼저 고양이를 등록해주세요!');
         openUploadModal();
         return;
     }
@@ -1057,7 +1441,7 @@ function searchName() {
         container.innerHTML = badge + `<div class="result-card">
             <div class="result-name">${query}</div>
             <div class="cat-count">${matchingCats.length === 1
-                ? '아직 동명이인이 없어요! 유일한 ' + query + '이에요 ✨'
+                ? '아직 동명이인이 없어요! 유일한 ' + query + '이에요'
                 : '등록된 고양이가 없어요'}</div>
             ${longevityMatch.length > 0 ? '<p style="margin-top:8px;font-size:13px;color:var(--gray-dark);">🌿 장수 이름이기도 해요!</p>' : ''}
         </div>`;
@@ -1085,7 +1469,7 @@ function searchName() {
 function renderSameNameSection(name, cats) {
     return `
         <div class="same-name-cats">
-            <h4>📷 "${name}" 동명이인 (${cats.length}마리)</h4>
+            <h4>"${name}" 동명이인 (${cats.length}마리)</h4>
             <div class="same-name-grid">
                 ${cats.map(c => `
                     <div class="same-name-item">
@@ -1266,7 +1650,7 @@ function renderGallery() {
                         <div class="mc-date">${cat.date}</div>
                     </div>
                     <div class="my-cat-actions">
-                        <button onclick="editMyCat(${idx})">사진 수정</button>
+                        <button onclick="editMyCatWithCrop(${idx})">사진 수정</button>
                         <button class="delete-btn" onclick="deleteMyCat(${idx})">삭제</button>
                     </div>
                 </div>
@@ -1281,7 +1665,7 @@ function renderGallery() {
     if (cats.length === 0) {
         gallery.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:36px;color:var(--gray-dark);">
             <p style="font-family:'Jua';font-size:16px;">아직 등록된 냥이가 없어요!</p>
-            <p style="font-size:13px;margin-top:6px;">위에서 등록해주세요 📷</p>
+            <p style="font-size:13px;margin-top:6px;">위에서 등록해주세요</p>
         </div>`;
         return;
     }
@@ -1303,7 +1687,7 @@ function getMyCatIds() {
 }
 function saveMyCatIds(ids) { localStorage.setItem('nyang_my_ids', JSON.stringify(ids)); }
 
-function editMyCat(idx) {
+function editMyCatWithCrop(idx) {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
@@ -1314,19 +1698,32 @@ function editMyCat(idx) {
         reader.onload = ev => {
             const img = new Image();
             img.onload = () => {
+                // Auto center-crop to square
                 const canvas = document.createElement('canvas');
-                const maxSize = 400;
-                let w = img.width, h = img.height;
-                if (w > h) { h = h * maxSize / w; w = maxSize; }
-                else { w = w * maxSize / h; h = maxSize; }
-                canvas.width = w; canvas.height = h;
-                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                const size = 400;
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                const minDim = Math.min(img.width, img.height);
+                const sx = (img.width - minDim) / 2;
+                const sy = (img.height - minDim) / 2;
+                ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+
                 const newImage = canvas.toDataURL('image/jpeg', 0.7);
                 const cats = getCats();
                 if (cats[idx]) {
                     cats[idx].image = newImage;
                     saveCats(cats);
+                    // Update myCat if this is the current cat
+                    if (myCat && myCat.name === cats[idx].name) {
+                        myCat.image = newImage;
+                        localStorage.setItem('nyang_my_cat', JSON.stringify(myCat));
+                        document.getElementById('heroPreviewImg').src = newImage;
+                    }
+                    renderMyCatCard();
                     renderGallery();
+                    showSameNamePreview(cats[idx].name);
                     showToast('사진이 수정되었어요!');
                 }
             };
@@ -1335,6 +1732,10 @@ function editMyCat(idx) {
         reader.readAsDataURL(file);
     };
     input.click();
+}
+
+function editMyCat(idx) {
+    editMyCatWithCrop(idx);
 }
 
 function deleteMyCat(idx) {
@@ -1347,11 +1748,66 @@ function deleteMyCat(idx) {
     let myIds = getMyCatIds().filter(id => id !== idx).map(id => id > idx ? id - 1 : id);
     saveMyCatIds(myIds);
     updateHeroCount();
+    renderMyCatCard();
     renderGallery();
+
+    // If no more cats registered, lock content again and reset hero
+    if (myIds.length === 0) {
+        myCat = null;
+        localStorage.removeItem('nyang_my_cat');
+        lockContent();
+        document.getElementById('heroPreview').classList.remove('show');
+        document.getElementById('flowLabel').textContent = '사진 올리고 동명이인 찾기';
+        document.getElementById('heroUploadBtn').style.display = '';
+        document.getElementById('heroSearchRow').classList.remove('show');
+        document.getElementById('sameNamePreview').classList.remove('show');
+    }
     showToast(`"${name}" 삭제되었어요`);
 }
 
+// ============ RESTORE MY CAT FROM LOCALSTORAGE ============
+function restoreMyCat() {
+    // Restore myCat from localStorage
+    try {
+        const saved = localStorage.getItem('nyang_my_cat');
+        if (saved) {
+            myCat = JSON.parse(saved);
+        }
+    } catch { }
+
+    // If no saved myCat, try to reconstruct from IDs
+    if (!myCat) {
+        const myIds = getMyCatIds();
+        if (myIds.length > 0) {
+            const cats = getCats();
+            const firstCat = cats[myIds[0]];
+            if (firstCat) {
+                myCat = { name: firstCat.name, image: firstCat.image };
+                localStorage.setItem('nyang_my_cat', JSON.stringify(myCat));
+            }
+        }
+    }
+
+    if (myCat) {
+        // Restore hero state
+        document.getElementById('heroPreviewImg').src = myCat.image;
+        document.getElementById('heroPreviewName').textContent = myCat.name;
+        document.getElementById('heroPreview').classList.add('show');
+        document.getElementById('flowLabel').textContent = '동명이인 찾기';
+        document.getElementById('heroUploadBtn').style.display = 'none';
+        document.getElementById('heroSearchRow').classList.add('show');
+        document.getElementById('searchInput').value = myCat.name;
+
+        // Unlock content
+        unlockContent();
+        renderMyCatCard();
+        showSameNamePreview(myCat.name);
+    }
+}
+
 // ============ INIT ============
+initCropHandlers();
+restoreMyCat();
 renderRecommendations();
 renderGallery();
 updateHeroCount();
