@@ -35,199 +35,71 @@
         .hero {
             background: var(--black);
             color: var(--white);
-            min-height: 100vh;
-            min-height: 100dvh;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             overflow: hidden;
         }
 
-        /* Logo at top */
+        /* SVG cat face fills hero */
+        .cat-face-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Text overlay on top of SVG */
+        .hero-text-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            text-align: center;
+            padding-top: 3%;
+        }
+
         .hero-logo {
             font-family: 'Jua', sans-serif;
             font-size: 18px;
-            padding: 20px;
-            z-index: 10;
+            color: var(--white);
             letter-spacing: 2px;
+            margin-bottom: 2%;
         }
 
-        /* Title */
         .hero h1 {
-            font-size: 38px;
+            font-size: clamp(28px, 7vw, 42px);
             line-height: 1.3;
-            z-index: 10;
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 2%;
+            color: var(--white);
         }
 
-        /* Counter */
         .live-counter {
-            font-size: 15px;
+            font-size: clamp(13px, 3vw, 16px);
             color: var(--gray-dark);
-            z-index: 10;
-            margin-bottom: 20px;
         }
         .live-counter .count-num {
             color: var(--eye-yellow);
-            font-size: 18px;
+            font-size: clamp(15px, 3.5vw, 20px);
         }
 
-        /* === Cat face elements === */
-
-        /* Ears - top corners */
-        .cat-ear {
-            position: absolute;
-            width: 0; height: 0;
-            z-index: 5;
-        }
-        .cat-ear.left {
-            top: 0; left: 0;
-            border-top: 120px solid var(--black);
-            border-right: 120px solid transparent;
-        }
-        .cat-ear.right {
-            top: 0; right: 0;
-            border-top: 120px solid var(--black);
-            border-left: 120px solid transparent;
-        }
-        /* Inner ears */
-        .cat-ear-inner {
-            position: absolute;
-            width: 0; height: 0;
-            z-index: 6;
-        }
-        .cat-ear-inner.left {
-            top: 0; left: 0;
-            border-top: 80px solid #333;
-            border-right: 80px solid transparent;
-        }
-        .cat-ear-inner.right {
-            top: 0; right: 0;
-            border-top: 80px solid #333;
-            border-left: 80px solid transparent;
-        }
-
-        /* Eyes */
-        .cat-eyes {
-            position: absolute;
-            top: 42%;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 8%;
-            z-index: 8;
-            pointer-events: none;
-        }
-
-        .cat-eye {
-            width: 130px;
-            height: 130px;
-            background: var(--eye-yellow);
-            border-radius: 50%;
-            position: relative;
-            border: 4px solid #333;
-        }
-
-        .cat-eye::after {
-            content: '';
-            position: absolute;
-            width: 50px;
-            height: 90px;
-            background: var(--black);
-            border-radius: 50%;
-            top: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .cat-eye .glint {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            top: 22px;
-            z-index: 2;
-        }
-        .cat-eye.left-eye .glint { right: 22px; }
-        .cat-eye.right-eye .glint { right: 22px; }
-
-        /* White nose/chin patch - big inverted triangle */
-        .nose-patch {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 55%;
-            height: 55%;
-            background: var(--white);
-            clip-path: polygon(50% 10%, 5% 100%, 95% 100%);
-            z-index: 7;
-        }
-
-        /* Nose */
-        .cat-nose {
-            position: absolute;
-            top: 55%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 12;
-            pointer-events: none;
-        }
-        .cat-nose-shape {
-            width: 28px;
-            height: 20px;
-            background: #ffaaaa;
-            border-radius: 50% 50% 35% 35%;
-            margin: 0 auto;
-        }
-        /* Mouth - X shape like the reference */
-        .cat-mouth-x {
-            position: relative;
-            width: 50px;
-            height: 30px;
-            margin-top: -2px;
-        }
-        .cat-mouth-x::before, .cat-mouth-x::after {
-            content: '';
-            position: absolute;
-            width: 28px;
-            height: 3px;
-            background: #ffaaaa;
-            top: 8px;
-            border-radius: 2px;
-        }
-        .cat-mouth-x::before {
-            left: 2px;
-            transform: rotate(25deg);
-        }
-        .cat-mouth-x::after {
-            right: 2px;
-            transform: rotate(-25deg);
-        }
-
-        /* Content area sitting on the white chin */
+        /* Content on white chin area */
         .hero-content {
             position: absolute;
-            bottom: 8%;
+            bottom: 18%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 15;
             text-align: center;
-            width: 90%;
-            max-width: 420px;
+            width: 70%;
+            max-width: 360px;
         }
 
         .hero-content .flow-label {
             color: var(--black);
-            font-size: 16px;
+            font-size: clamp(14px, 3.5vw, 18px);
             margin-bottom: 10px;
         }
 
-        /* Upload + Search flow on the chin */
         .hero-flow {
             display: flex;
             flex-direction: column;
@@ -235,12 +107,12 @@
         }
 
         .hero-upload-btn {
-            padding: 14px 20px;
+            padding: 12px 20px;
             background: var(--black);
             color: var(--white);
             border: none;
             border-radius: 50px;
-            font-size: 17px;
+            font-size: clamp(14px, 3.5vw, 17px);
             cursor: pointer;
             transition: transform 0.2s;
             width: 100%;
@@ -255,10 +127,10 @@
 
         .hero-search-row input {
             width: 100%;
-            padding: 14px 52px 14px 20px;
+            padding: 12px 48px 12px 18px;
             border: 3px solid var(--black);
             border-radius: 50px;
-            font-size: 16px;
+            font-size: 15px;
             font-family: 'Jua', sans-serif;
             outline: none;
         }
@@ -270,72 +142,52 @@
             color: var(--white);
             border: none;
             border-radius: 50%;
-            width: 38px; height: 38px;
-            font-size: 18px;
+            width: 36px; height: 36px;
+            font-size: 16px;
             cursor: pointer;
         }
 
-        /* Mini preview of uploaded cat */
         .hero-preview {
             display: none;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             background: rgba(255,255,255,0.9);
             border: 2px solid var(--black);
-            border-radius: 16px;
-            padding: 10px 16px;
+            border-radius: 14px;
+            padding: 8px 14px;
             margin-bottom: 6px;
         }
         .hero-preview.show { display: flex; }
         .hero-preview img {
-            width: 50px; height: 50px;
+            width: 44px; height: 44px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--black);
         }
-        .hero-preview .preview-info {
-            text-align: left;
-            color: var(--black);
-        }
-        .hero-preview .preview-name {
-            font-family: 'Jua', sans-serif;
-            font-size: 18px;
-        }
-        .hero-preview .preview-status {
-            font-size: 12px;
-            color: var(--gray-dark);
+        .hero-preview .preview-info { text-align: left; color: var(--black); }
+        .hero-preview .preview-name { font-family: 'Jua', sans-serif; font-size: 16px; }
+        .hero-preview .preview-status { font-size: 11px; color: var(--gray-dark); }
+
+        /* Black continuation below hero so scroll is seamless */
+        .hero-bottom-extend {
+            background: var(--white);
+            position: relative;
         }
 
-        /* Cat spots at bottom of page */
-        .spot {
-            position: fixed;
+        /* Black spots on white area below cat face */
+        .body-spots {
+            position: relative;
+            height: 120px;
+            overflow: hidden;
+        }
+        .body-spot {
+            position: absolute;
             background: var(--black);
             border-radius: 50%;
-            opacity: 0.05;
-            z-index: 0;
-            pointer-events: none;
         }
-        .spot-1 { width: 180px; height: 160px; bottom: -30px; left: -40px; border-radius: 60% 40% 50% 50%; }
-        .spot-2 { width: 140px; height: 120px; bottom: -20px; right: -30px; border-radius: 40% 60% 45% 55%; }
-        .spot-3 { width: 100px; height: 90px; top: 50%; left: -20px; border-radius: 55% 45% 50% 50%; opacity: 0.03; }
-        .spot-4 { width: 120px; height: 100px; top: 30%; right: -30px; border-radius: 50% 50% 40% 60%; opacity: 0.03; }
-
-        /* Scroll indicator */
-        .scroll-hint {
-            position: absolute;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 20;
-            color: var(--gray-dark);
-            font-size: 12px;
-            animation: bounce 2s infinite;
-            text-align: center;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-8px); }
-        }
+        .body-spot-1 { width: 120px; height: 100px; bottom: -20px; left: -20px; border-radius: 60% 40% 50% 50%; }
+        .body-spot-2 { width: 100px; height: 80px; bottom: -10px; right: -10px; border-radius: 40% 60% 50% 50%; }
+        .body-spot-3 { width: 60px; height: 50px; bottom: 20px; left: 30%; border-radius: 50%; opacity: 0.3; }
 
         /* ========== UPLOAD MODAL ========== */
         .modal-overlay {
@@ -702,17 +554,7 @@
 
         /* ===== MOBILE ===== */
         @media (max-width: 600px) {
-            .hero h1 { font-size: 28px; }
-            .cat-eye { width: 80px; height: 80px; }
-            .cat-eye::after { width: 32px; height: 56px; top: 10px; }
-            .cat-eye .glint { width: 14px; height: 14px; top: 14px; right: 14px; }
-            .cat-eyes { top: 38%; padding: 0 5%; }
-            .nose-patch { width: 65%; height: 55%; }
-            .cat-nose { top: 50%; }
-            .cat-nose-shape { width: 22px; height: 16px; }
-            .cat-mouth-x { width: 40px; height: 24px; }
-            .cat-mouth-x::before, .cat-mouth-x::after { width: 22px; height: 2px; top: 6px; }
-            .hero-content { bottom: 6%; }
+            .hero-content { bottom: 14%; width: 75%; }
             .tab-btn { font-size: 12px; padding: 10px 4px; }
             .rank-bar-container { flex: 1; }
             .ranking-item { padding: 10px 8px; gap: 10px; }
@@ -720,54 +562,86 @@
             .result-name { font-size: 24px; }
             .random-result { font-size: 36px; }
             .suggest-row { flex-direction: column; }
-            .cat-ear.left { border-top-width: 80px; border-right-width: 80px; }
-            .cat-ear.right { border-top-width: 80px; border-left-width: 80px; }
-            .cat-ear-inner.left { border-top-width: 55px; border-right-width: 55px; }
-            .cat-ear-inner.right { border-top-width: 55px; border-left-width: 55px; }
         }
     </style>
 </head>
 <body>
 
-<!-- Cat spots on margins -->
-<div class="spot spot-1"></div>
-<div class="spot spot-2"></div>
-<div class="spot spot-3"></div>
-<div class="spot spot-4"></div>
-
-<!-- ========== HERO: Full-screen tuxedo cat face ========== -->
+<!-- ========== HERO: Full-screen tuxedo cat face (SVG) ========== -->
 <section class="hero">
-    <!-- Ears -->
-    <div class="cat-ear left"></div>
-    <div class="cat-ear right"></div>
-    <div class="cat-ear-inner left"></div>
-    <div class="cat-ear-inner right"></div>
+    <!-- SVG Cat Face - traced from reference -->
+    <svg class="cat-face-svg" viewBox="0 0 420 750" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <!-- Black background -->
+        <rect width="420" height="750" fill="#1a1a1a"/>
 
-    <!-- Eyes -->
-    <div class="cat-eyes">
-        <div class="cat-eye left-eye"><div class="glint"></div></div>
-        <div class="cat-eye right-eye"><div class="glint"></div></div>
+        <!-- Ears - organic curves at top corners -->
+        <path d="M0,0 L0,100 Q30,60 80,40 Q50,10 60,0 Z" fill="#2a2a2a"/>
+        <path d="M420,0 L420,100 Q390,60 340,40 Q370,10 360,0 Z" fill="#2a2a2a"/>
+
+        <!-- White patch - big rounded blob flowing down from center -->
+        <!-- Starts narrow between eyes, widens into round chin, flows to bottom -->
+        <path d="
+            M210,310
+            C180,310 155,340 140,370
+            Q110,420 100,470
+            Q85,530 80,580
+            Q75,640 90,700
+            Q100,740 120,750
+            L300,750
+            Q320,740 330,700
+            Q345,640 340,580
+            Q335,530 320,470
+            Q310,420 280,370
+            C265,340 240,310 210,310
+            Z
+        " fill="#ffffff"/>
+
+        <!-- Left eye - big and round -->
+        <circle cx="120" cy="385" r="58" fill="#e0d04a" stroke="#333" stroke-width="4"/>
+        <!-- Left pupil -->
+        <ellipse cx="120" cy="388" rx="22" ry="40" fill="#1a1a1a"/>
+        <!-- Left glint -->
+        <circle cx="135" cy="370" r="10" fill="white" opacity="0.9"/>
+
+        <!-- Right eye - big and round -->
+        <circle cx="300" cy="385" r="58" fill="#e0d04a" stroke="#333" stroke-width="4"/>
+        <!-- Right pupil -->
+        <ellipse cx="300" cy="388" rx="22" ry="40" fill="#1a1a1a"/>
+        <!-- Right glint -->
+        <circle cx="315" cy="370" r="10" fill="white" opacity="0.9"/>
+
+        <!-- Whisker dots -->
+        <circle cx="185" cy="460" r="5" fill="#1a1a1a"/>
+        <circle cx="195" cy="472" r="4" fill="#1a1a1a"/>
+        <circle cx="235" cy="460" r="5" fill="#1a1a1a"/>
+        <circle cx="225" cy="472" r="4" fill="#1a1a1a"/>
+
+        <!-- Nose - small pink/black -->
+        <ellipse cx="210" cy="448" rx="10" ry="7" fill="#ffaaaa"/>
+
+        <!-- Mouth - X shape -->
+        <line x1="195" y1="458" x2="210" y2="470" stroke="#ffaaaa" stroke-width="3" stroke-linecap="round"/>
+        <line x1="225" y1="458" x2="210" y2="470" stroke="#ffaaaa" stroke-width="3" stroke-linecap="round"/>
+        <line x1="210" y1="470" x2="200" y2="480" stroke="#ffaaaa" stroke-width="3" stroke-linecap="round"/>
+        <line x1="210" y1="470" x2="220" y2="480" stroke="#ffaaaa" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Black spots on white area near bottom -->
+        <ellipse cx="80" cy="700" rx="70" ry="55" fill="#1a1a1a"/>
+        <ellipse cx="350" cy="710" rx="60" ry="50" fill="#1a1a1a"/>
+        <ellipse cx="200" cy="740" rx="40" ry="25" fill="#1a1a1a" opacity="0.15"/>
+    </svg>
+
+    <!-- Text overlay -->
+    <div class="hero-text-overlay">
+        <div class="hero-logo">떼껄룩 작명소</div>
+        <h1>우리 고양이 이름,<br>몇 마리나 쓸까?</h1>
+        <div class="live-counter">
+            현재 <span class="count-num" id="heroCount">0</span>마리 고양이가 등록 완료!
+        </div>
     </div>
 
-    <!-- White nose/chin patch -->
-    <div class="nose-patch"></div>
-
-    <!-- Nose + mouth -->
-    <div class="cat-nose">
-        <div class="cat-nose-shape"></div>
-        <div class="cat-mouth-x"></div>
-    </div>
-
-    <!-- Top content -->
-    <div class="hero-logo">떼껄룩 작명소</div>
-    <h1>우리 고양이 이름,<br>몇 마리나 쓸까?</h1>
-    <div class="live-counter">
-        현재 <span class="count-num" id="heroCount">0</span>마리 고양이가 등록 완료!
-    </div>
-
-    <!-- Bottom content on white chin -->
+    <!-- Content on white chin area -->
     <div class="hero-content">
-        <!-- After upload: show preview -->
         <div class="hero-preview" id="heroPreview">
             <img id="heroPreviewImg" src="" alt="">
             <div class="preview-info">
@@ -788,8 +662,6 @@
             </div>
         </div>
     </div>
-
-    <div class="scroll-hint" id="scrollHint">아래로 스크롤 ↓</div>
 </section>
 
 <!-- ========== UPLOAD MODAL ========== -->
