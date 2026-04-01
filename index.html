@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>냥명이인 - 고양이 이름 동명이인 찾기</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black: #1a1a1a;
+            --white: #ffffff;
+            --gray-light: #f5f5f5;
+            --gray-mid: #e0e0e0;
+            --gray-dark: #888;
+            --accent: #ff6b35;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            min-height: 100vh;
+        }
+
+        /* Cute rounded font for headings */
+        h1, h2, h3, .logo, .tab-btn, .name-tag, .cat-count, .section-title, .hero-subtitle {
+            font-family: 'Jua', sans-serif;
+        }
+
+        /* Header */
+        header {
+            background: var(--black);
+            color: var(--white);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 28px;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            display: inline-block;
+            background: var(--white);
+            color: var(--black);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            text-align: center;
+            line-height: 36px;
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        /* Paw pattern decoration */
+        .paw-pattern {
+            position: fixed;
+            opacity: 0.03;
+            font-size: 120px;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .paw-1 { top: 10%; left: 5%; transform: rotate(-20deg); }
+        .paw-2 { top: 40%; right: 5%; transform: rotate(15deg); }
+        .paw-3 { bottom: 15%; left: 10%; transform: rotate(-35deg); }
+
+        /* Hero */
+        .hero {
+            background: var(--black);
+            color: var(--white);
+            text-align: center;
+            padding: 48px 24px 56px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--gray-dark);
+            margin-bottom: 32px;
+        }
+
+        .search-box {
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 16px 24px;
+            padding-right: 52px;
+            border: 3px solid var(--white);
+            border-radius: 50px;
+            font-size: 18px;
+            font-family: 'Jua', sans-serif;
+            outline: none;
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .search-box input::placeholder {
+            color: var(--gray-dark);
+        }
+
+        .search-box button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Main content */
+        main {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin: 32px 0 24px;
+            border-bottom: 3px solid var(--black);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px 8px;
+            background: var(--gray-light);
+            border: 3px solid var(--black);
+            border-bottom: none;
+            border-radius: 16px 16px 0 0;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--gray-dark);
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--gray-mid);
+            color: var(--black);
+        }
+
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Section title */
+        .section-title {
+            font-size: 22px;
+            margin: 28px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title .icon {
+            font-size: 24px;
+        }
+
+        /* Search results */
+        .result-card {
+            background: var(--gray-light);
+            border: 2px solid var(--black);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            animation: fadeUp 0.3s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-name {
+            font-family: 'Jua', sans-serif;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .cat-count {
+            font-size: 16px;
+            color: var(--gray-dark);
+            margin-bottom: 12px;
+        }
+
+        .result-bar {
+            height: 12px;
+            background: var(--gray-mid);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .result-bar-fill {
+            height: 100%;
+            background: var(--black);
+            border-radius: 6px;
+            transition: width 0.6s ease;
+        }
+
+        .result-rank {
+            font-size: 14px;
+            color: var(--gray-dark);
+        }
+
+        /* Ranking list */
+        .ranking-list {
+            list-style: none;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--gray-mid);
+            gap: 16px;
+            transition: background 0.2s;
+        }
+
+        .ranking-item:hover {
+            background: var(--gray-light);
+        }
+
+        .rank-num {
+            font-family: 'Jua', sans-serif;
+            font-size: 24px;
+            width: 40px;
+            text-align: center;
+            color: var(--black);
+        }
+
+        .rank-num.top3 {
+            background: var(--black);
+            color: var(--white);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            font-size: 18px;
+        }
+
+        .rank-name {
+            font-family: 'Jua', sans-serif;
+            font-size: 20px;
+            flex: 1;
+        }
+
+        .rank-bar-container {
+            flex: 2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rank-bar {
+            flex: 1;
+            height: 10px;
+            background: var(--gray-mid);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .rank-bar-fill {
+            height: 100%;
+            background: var(--black);
+            border-radius: 5px;
+        }
+
+        .rank-count {
+            font-size: 13px;
+            color: var(--gray-dark);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* Name tags grid */
+        .name-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .name-tag {
+            display: inline-block;
+            padding: 10px 20px;
+            border: 2px solid var(--black);
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--white);
+        }
+
+        .name-tag:hover, .name-tag.selected {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        .name-tag .sub {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 12px;
+            color: var(--gray-dark);
+            display: block;
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        .name-tag:hover .sub, .name-tag.selected .sub {
+            color: var(--gray-mid);
+        }
+
+        /* Category pills */
+        .category-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .pill {
+            padding: 8px 18px;
+            border: 2px solid var(--black);
+            border-radius: 50px;
+            font-family: 'Jua', sans-serif;
+            font-size: 15px;
+            cursor: pointer;
+            background: var(--white);
+            transition: all 0.2s;
+        }
+
+        .pill.active {
+            background: var(--black);
+            color: var(--white);
+        }
+
+        /* Superstition banner */
+        .superstition-banner {
+            background: var(--black);
+            color: var(--white);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .superstition-banner h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .superstition-banner p {
+            font-size: 14px;
+            color: var(--gray-dark);
+            line-height: 1.6;
+        }
+
+        /* Random name generator */
+        .random-section {
+            text-align: center;
+            padding: 32px 0;
+        }
+
+        .random-btn {
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            padding: 16px 40px;
+            font-family: 'Jua', sans-serif;
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .random-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .random-btn:active {
+            transform: scale(0.95);
+        }
+
+        .random-result {
+            font-family: 'Jua', sans-serif;
+            font-size: 48px;
+            margin: 24px 0 8px;
+            min-height: 60px;
+            transition: all 0.3s;
+        }
+
+        .random-meaning {
+            font-size: 15px;
+            color: var(--gray-dark);
+            min-height: 24px;
+        }
+
+        /* No results */
+        .no-results {
+            text-align: center;
+            padding: 48px 16px;
+            color: var(--gray-dark);
+        }
+
+        .no-results .emoji {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .no-results p {
+            font-family: 'Jua', sans-serif;
+            font-size: 18px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 16px;
+            color: var(--gray-dark);
+            font-size: 13px;
+            border-top: 1px solid var(--gray-mid);
+            margin-top: 48px;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 28px; }
+            .hero-subtitle { font-size: 15px; }
+            .search-box input { font-size: 16px; padding: 14px 20px; }
+            .tab-btn { font-size: 13px; padding: 12px 4px; }
+            .rank-bar-container { flex: 1; }
+            .ranking-item { padding: 12px 8px; gap: 10px; }
+            .rank-name { font-size: 17px; }
+            .result-name { font-size: 26px; }
+            .random-result { font-size: 40px; }
+            .logo { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="paw-pattern paw-1">🐾</div>
+<div class="paw-pattern paw-2">🐾</div>
+<div class="paw-pattern paw-3">🐾</div>
+
+<header>
+    <div class="logo"><span>🐱</span> 냥명이인</div>
+</header>
+
+<section class="hero">
+    <h1>우리 고양이 이름, 몇 마리나 쓸까?</h1>
+    <p class="hero-subtitle">고양이 이름 동명이인 찾기 & 이름 추천</p>
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="고양이 이름을 검색해보세요 (예: 나비)" autocomplete="off">
+        <button onclick="searchName()">🔍</button>
+    </div>
+</section>
+
+<main>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('search')">이름 검색</button>
+        <button class="tab-btn" onclick="switchTab('ranking')">인기 순위</button>
+        <button class="tab-btn" onclick="switchTab('recommend')">장수 이름 추천</button>
+    </div>
+
+    <!-- Tab 1: Search Results -->
+    <div id="tab-search" class="tab-content active">
+        <div id="searchResults">
+            <div class="no-results">
+                <div class="emoji">🐱</div>
+                <p>고양이 이름을 검색해보세요!</p>
+                <p style="font-family:'Noto Sans KR';font-size:14px;margin-top:8px;color:#aaa;">
+                    예: 나비, 두부, 콩이, 호두, 치즈...
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab 2: Popular Ranking -->
+    <div id="tab-ranking" class="tab-content">
+        <h2 class="section-title"><span class="icon">👑</span> 한국 고양이 이름 인기 순위</h2>
+        <ul class="ranking-list" id="rankingList"></ul>
+    </div>
+
+    <!-- Tab 3: Longevity Names -->
+    <div id="tab-recommend" class="tab-content">
+        <div class="superstition-banner">
+            <h3>🌿 먹는 이름을 지으면 오래 산다!</h3>
+            <p>옛날부터 동물에게 음식, 곡물, 식물 이름을 지어주면<br>
+            오래오래 건강하게 산다는 속설이 있어요.</p>
+        </div>
+
+        <div class="category-pills">
+            <button class="pill active" onclick="filterCategory('all')">전체</button>
+            <button class="pill" onclick="filterCategory('flower')">꽃</button>
+            <button class="pill" onclick="filterCategory('herb')">나물/풀</button>
+            <button class="pill" onclick="filterCategory('plant')">식물/나무</button>
+            <button class="pill" onclick="filterCategory('grain')">곡물/열매</button>
+            <button class="pill" onclick="filterCategory('food')">음식</button>
+        </div>
+
+        <div class="name-tags" id="recommendTags"></div>
+
+        <div class="random-section">
+            <button class="random-btn" onclick="randomName()">🎲 랜덤 이름 뽑기</button>
+            <div class="random-result" id="randomResult"></div>
+            <div class="random-meaning" id="randomMeaning"></div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    냥명이인 — 고양이 이름 동명이인 찾기 🐾<br>
+    데이터는 커뮤니티 통계 기반 추정치입니다
+</footer>
+
+<script>
+// ============ DATA ============
+
+// Popular Korean cat names with estimated counts (per ~10,000 cats)
+const catNames = [
+    { name: "나비", count: 870, desc: "가장 클래식한 고양이 이름" },
+    { name: "두부", count: 720, desc: "하얀 털 고양이에게 인기" },
+    { name: "콩이", count: 680, desc: "작고 동글한 아이에게 딱" },
+    { name: "치즈", count: 650, desc: "치즈태비 고양이의 대명사" },
+    { name: "모찌", count: 620, desc: "말랑말랑 귀여운 느낌" },
+    { name: "호두", count: 580, desc: "갈색 털 고양이에게 인기" },
+    { name: "밤이", count: 540, desc: "밤색 고양이의 단골 이름" },
+    { name: "망고", count: 520, desc: "노란 털 고양이에게 인기" },
+    { name: "보리", count: 510, desc: "곡물 이름, 장수 기원" },
+    { name: "까미", count: 490, desc: "까만 고양이의 대표 이름" },
+    { name: "깜이", count: 470, desc: "까미의 변형, 역시 인기" },
+    { name: "루루", count: 450, desc: "부르기 쉬운 반복 이름" },
+    { name: "코코", count: 430, desc: "세련된 느낌의 이름" },
+    { name: "솜이", count: 420, desc: "솜처럼 폭신한 장모종에게" },
+    { name: "구름", count: 410, desc: "흰 고양이에게 어울리는 이름" },
+    { name: "달이", count: 390, desc: "둥근 얼굴의 고양이에게" },
+    { name: "별이", count: 370, desc: "반짝이는 눈의 고양이에게" },
+    { name: "하루", count: 360, desc: "매일매일 소중한 의미" },
+    { name: "초코", count: 350, desc: "초콜릿색 고양이에게" },
+    { name: "감자", count: 340, desc: "통통한 고양이에게 딱" },
+    { name: "고구마", count: 320, desc: "감자의 친구, 달콤한 이름" },
+    { name: "미미", count: 310, desc: "고전적인 고양이 이름" },
+    { name: "누리", count: 300, desc: "세상을 뜻하는 순우리말" },
+    { name: "야옹이", count: 290, desc: "고양이 울음소리 그 자체" },
+    { name: "모카", count: 280, desc: "커피색 고양이에게" },
+    { name: "쿠키", count: 270, desc: "달콤한 과자 이름" },
+    { name: "복이", count: 260, desc: "복을 부르는 이름" },
+    { name: "냥이", count: 255, desc: "냥냥, 단순하고 귀여운" },
+    { name: "무무", count: 240, desc: "무의 반복, 부르기 쉬운" },
+    { name: "뽀뽀", count: 230, desc: "뽀뽀하고 싶은 아이에게" },
+    { name: "금이", count: 220, desc: "금빛 고양이에게" },
+    { name: "떡이", count: 210, desc: "떡처럼 쫀득한 느낌" },
+    { name: "팥이", count: 200, desc: "팥앙금 같은 갈색 고양이" },
+    { name: "쑥이", count: 190, desc: "쑥색(회녹색) 고양이에게" },
+    { name: "나루", count: 180, desc: "순우리말, 나루터의 나루" },
+    { name: "노을", count: 170, desc: "노을빛 털색의 고양이" },
+    { name: "하늘", count: 165, desc: "파란 눈의 고양이에게" },
+    { name: "뭉치", count: 160, desc: "뭉쳐있는 모습이 귀여운" },
+    { name: "삼색이", count: 155, desc: "삼색 고양이의 정석 이름" },
+    { name: "줄무늬", count: 145, desc: "고등어태비의 별명" },
+    { name: "나리", count: 140, desc: "나리꽃에서 따온 이름" },
+    { name: "도토리", count: 135, desc: "작고 동글동글한 아이에게" },
+    { name: "라떼", count: 130, desc: "라떼 색상의 고양이" },
+    { name: "까망이", count: 125, desc: "까미의 풀네임 버전" },
+    { name: "하양이", count: 120, desc: "흰 고양이의 정석" },
+    { name: "노랑이", count: 115, desc: "노란 고양이 대표 이름" },
+    { name: "꽃이", count: 110, desc: "예쁜 꽃 같은 아이에게" },
+    { name: "봄이", count: 105, desc: "봄에 태어난 고양이" },
+    { name: "미르", count: 100, desc: "용을 뜻하는 순우리말" },
+    { name: "수리", count: 95, desc: "독수리의 수리, 멋진 이름" },
+];
+
+// Longevity recommendation names - plants, herbs, flowers, grasses
+const longevityNames = [
+    // 꽃 (flowers)
+    { name: "장미", meaning: "사랑과 아름다움의 꽃", category: "flower" },
+    { name: "백합", meaning: "순수함을 상징하는 꽃", category: "flower" },
+    { name: "진달래", meaning: "봄의 전령, 분홍빛 꽃", category: "flower" },
+    { name: "개나리", meaning: "봄을 알리는 노란 꽃", category: "flower" },
+    { name: "동백", meaning: "겨울에 피는 붉은 꽃", category: "flower" },
+    { name: "목련", meaning: "봄의 시작을 알리는 꽃", category: "flower" },
+    { name: "라일락", meaning: "향기로운 보라빛 꽃", category: "flower" },
+    { name: "코스모스", meaning: "가을 들판의 꽃", category: "flower" },
+    { name: "민들레", meaning: "강인한 생명력의 꽃", category: "flower" },
+    { name: "해바라기", meaning: "태양을 따르는 꽃", category: "flower" },
+    { name: "나팔꽃", meaning: "아침에 피는 예쁜 꽃", category: "flower" },
+    { name: "매화", meaning: "추위를 이기고 피는 꽃", category: "flower" },
+    { name: "국화", meaning: "가을의 대표 꽃", category: "flower" },
+    { name: "봉선화", meaning: "손톱에 물들이던 꽃", category: "flower" },
+    { name: "수선화", meaning: "봄의 향기로운 꽃", category: "flower" },
+    { name: "튤립", meaning: "사랑의 고백 꽃", category: "flower" },
+    { name: "나리", meaning: "백합과의 예쁜 꽃", category: "flower" },
+    { name: "찔레", meaning: "들장미, 소박한 아름다움", category: "flower" },
+    { name: "채송화", meaning: "여름에 피는 알록달록 꽃", category: "flower" },
+    { name: "제비꽃", meaning: "보라색 작은 꽃", category: "flower" },
+    { name: "아카시아", meaning: "향기로운 하얀 꽃", category: "flower" },
+
+    // 나물/풀 (herbs/grass)
+    { name: "쑥이", meaning: "향긋한 봄나물", category: "herb" },
+    { name: "미나리", meaning: "물가에 자라는 향긋한 나물", category: "herb" },
+    { name: "냉이", meaning: "봄을 알리는 첫 번째 나물", category: "herb" },
+    { name: "달래", meaning: "봄 향기 나는 작은 나물", category: "herb" },
+    { name: "부추", meaning: "향긋한 초록 나물", category: "herb" },
+    { name: "씀바귀", meaning: "씁쓸하지만 건강한 나물", category: "herb" },
+    { name: "취나물", meaning: "산에서 나는 향긋한 나물", category: "herb" },
+    { name: "고사리", meaning: "숲속의 양치식물", category: "herb" },
+    { name: "도라지", meaning: "보라꽃 피는 산나물", category: "herb" },
+    { name: "더덕", meaning: "산속의 귀한 뿌리 나물", category: "herb" },
+    { name: "질경이", meaning: "길가에 자라는 질긴 풀", category: "herb" },
+    { name: "클로버", meaning: "행운의 네잎클로버", category: "herb" },
+    { name: "억새", meaning: "가을 들판의 풀", category: "herb" },
+    { name: "갈대", meaning: "바람에 흔들리는 물가 풀", category: "herb" },
+    { name: "이끼", meaning: "바위 위의 초록 생명", category: "herb" },
+
+    // 식물/나무 (plants/trees)
+    { name: "소나무", meaning: "겨울에도 푸른 나무", category: "plant" },
+    { name: "버드나무", meaning: "물가의 늘어진 나무", category: "plant" },
+    { name: "은행", meaning: "노란 가을을 만드는 나무", category: "plant" },
+    { name: "단풍", meaning: "가을을 붉게 물들이는 나무", category: "plant" },
+    { name: "대나무", meaning: "곧은 절개의 상징", category: "plant" },
+    { name: "자작", meaning: "하얀 껍질의 자작나무", category: "plant" },
+    { name: "느티", meaning: "마을을 지키는 큰 나무", category: "plant" },
+    { name: "측백", meaning: "사시사철 푸른 나무", category: "plant" },
+    { name: "선인장", meaning: "강한 생명력의 식물", category: "plant" },
+    { name: "담쟁이", meaning: "벽을 타고 오르는 식물", category: "plant" },
+    { name: "옥수수", meaning: "여름의 대표 식물", category: "plant" },
+    { name: "솔잎", meaning: "소나무의 잎, 늘 푸른", category: "plant" },
+
+    // 곡물/열매 (grains/fruits)
+    { name: "보리", meaning: "건강한 곡물, 풍요의 상징", category: "grain" },
+    { name: "콩이", meaning: "작고 동글동글한 곡물", category: "grain" },
+    { name: "팥이", meaning: "붉은빛의 달콤한 곡물", category: "grain" },
+    { name: "호두", meaning: "딱딱하지만 고소한 열매", category: "grain" },
+    { name: "밤이", meaning: "가을의 달콤한 열매", category: "grain" },
+    { name: "도토리", meaning: "다람쥐가 좋아하는 열매", category: "grain" },
+    { name: "은행", meaning: "노란 가을 열매", category: "grain" },
+    { name: "매실", meaning: "새콤한 초록 열매", category: "grain" },
+    { name: "살구", meaning: "부드러운 주황빛 열매", category: "grain" },
+    { name: "모과", meaning: "향기로운 가을 열매", category: "grain" },
+    { name: "앵두", meaning: "빨갛고 작은 열매", category: "grain" },
+    { name: "참깨", meaning: "고소한 작은 씨앗", category: "grain" },
+    { name: "들깨", meaning: "향긋한 가을 씨앗", category: "grain" },
+    { name: "수수", meaning: "붉은 곡물, 액운을 쫓는", category: "grain" },
+    { name: "조이", meaning: "작고 노란 곡물", category: "grain" },
+    { name: "귀리", meaning: "건강한 곡물", category: "grain" },
+
+    // 음식 (food)
+    { name: "두부", meaning: "하얗고 부드러운 음식", category: "food" },
+    { name: "감자", meaning: "통통하고 든든한 음식", category: "food" },
+    { name: "고구마", meaning: "달콤한 겨울 간식", category: "food" },
+    { name: "떡이", meaning: "쫀득쫀득 한국의 대표 간식", category: "food" },
+    { name: "인절미", meaning: "콩고물 묻은 쫀득한 떡", category: "food" },
+    { name: "송편", meaning: "반달 모양의 추석 떡", category: "food" },
+    { name: "경단", meaning: "동글동글 예쁜 떡", category: "food" },
+    { name: "약과", meaning: "달콤한 전통 과자", category: "food" },
+    { name: "누룽지", meaning: "구수한 밥 바닥", category: "food" },
+    { name: "미숫가루", meaning: "고소한 곡물 가루", category: "food" },
+];
+
+// ============ FUNCTIONS ============
+
+const maxCount = catNames[0].count;
+
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        const tabs = ['search', 'ranking', 'recommend'];
+        btn.classList.toggle('active', tabs[i] === tabName);
+    });
+    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+    document.getElementById('tab-' + tabName).classList.add('active');
+}
+
+function searchName() {
+    const query = document.getElementById('searchInput').value.trim();
+    if (!query) return;
+
+    switchTab('search');
+    const results = catNames.filter(c =>
+        c.name.includes(query) || query.includes(c.name)
+    );
+
+    const container = document.getElementById('searchResults');
+
+    if (results.length === 0) {
+        // Check longevity names too
+        const longevityMatch = longevityNames.filter(n =>
+            n.name.includes(query) || query.includes(n.name)
+        );
+
+        if (longevityMatch.length > 0) {
+            container.innerHTML = `
+                <div class="result-card">
+                    <div class="result-name">${query}</div>
+                    <div class="cat-count">인기 순위에는 없지만, 장수 이름이에요! 🌿</div>
+                    <p style="margin-top:12px;color:#888;font-size:14px;">
+                        "${query}"은(는) 먹는 이름으로, 동물이 오래 산다는 속설이 있어요.
+                    </p>
+                </div>
+                <div style="text-align:center;margin-top:16px;">
+                    <p style="font-family:'Jua';font-size:16px;color:#888;">
+                        유니크한 이름이네요! 동명이인이 적어 특별해요 ✨
+                    </p>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="result-card">
+                    <div class="result-name">${query}</div>
+                    <div class="cat-count">동명이인 데이터에 없어요</div>
+                </div>
+                <div style="text-align:center;margin-top:16px;">
+                    <p style="font-family:'Jua';font-size:16px;color:#888;">
+                        아주 유니크한 이름이에요! 동명이인이 거의 없을 거예요 ✨
+                    </p>
+                </div>
+            `;
+        }
+        return;
+    }
+
+    container.innerHTML = results.map((cat, i) => {
+        const rank = catNames.indexOf(cat) + 1;
+        const pct = (cat.count / maxCount * 100).toFixed(0);
+        return `
+            <div class="result-card" style="animation-delay:${i * 0.1}s">
+                <div class="result-name">${cat.name}</div>
+                <div class="cat-count">추정 약 ${cat.count.toLocaleString()}마리 / 만 마리 중</div>
+                <div class="result-bar">
+                    <div class="result-bar-fill" style="width:${pct}%"></div>
+                </div>
+                <div class="result-rank">인기 ${rank}위 · ${cat.desc}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Ranking list
+function renderRanking() {
+    const list = document.getElementById('rankingList');
+    list.innerHTML = catNames.map((cat, i) => {
+        const pct = (cat.count / maxCount * 100).toFixed(0);
+        return `
+            <li class="ranking-item" onclick="document.getElementById('searchInput').value='${cat.name}';searchName();">
+                <div class="rank-num ${i < 3 ? 'top3' : ''}">${i + 1}</div>
+                <div class="rank-name">${cat.name}</div>
+                <div class="rank-bar-container">
+                    <div class="rank-bar">
+                        <div class="rank-bar-fill" style="width:${pct}%"></div>
+                    </div>
+                    <div class="rank-count">${cat.count}마리</div>
+                </div>
+            </li>
+        `;
+    }).join('');
+}
+
+// Recommend tab
+let currentCategory = 'all';
+
+function filterCategory(cat) {
+    currentCategory = cat;
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    renderRecommendations();
+}
+
+function renderRecommendations() {
+    const filtered = currentCategory === 'all'
+        ? longevityNames
+        : longevityNames.filter(n => n.category === currentCategory);
+
+    const container = document.getElementById('recommendTags');
+    container.innerHTML = filtered.map(n => `
+        <div class="name-tag" onclick="selectRecommendation('${n.name}','${n.meaning}')">
+            ${n.name}
+            <span class="sub">${n.meaning.substring(0, 12)}...</span>
+        </div>
+    `).join('');
+}
+
+function selectRecommendation(name, meaning) {
+    document.getElementById('randomResult').textContent = name;
+    document.getElementById('randomMeaning').textContent = meaning;
+
+    // Also search in main DB
+    document.getElementById('searchInput').value = name;
+
+    document.querySelectorAll('.name-tag').forEach(t => {
+        t.classList.toggle('selected', t.textContent.trim().startsWith(name));
+    });
+}
+
+function randomName() {
+    const btn = document.querySelector('.random-btn');
+    btn.style.transform = 'scale(0.9)';
+    setTimeout(() => btn.style.transform = '', 150);
+
+    const filtered = currentCategory === 'all'
+        ? longevityNames
+        : longevityNames.filter(n => n.category === currentCategory);
+
+    // Shuffle animation
+    const resultEl = document.getElementById('randomResult');
+    const meaningEl = document.getElementById('randomMeaning');
+
+    let count = 0;
+    const interval = setInterval(() => {
+        const rand = filtered[Math.floor(Math.random() * filtered.length)];
+        resultEl.textContent = rand.name;
+        meaningEl.textContent = rand.meaning;
+        count++;
+        if (count > 8) {
+            clearInterval(interval);
+            const final = filtered[Math.floor(Math.random() * filtered.length)];
+            resultEl.textContent = final.name;
+            meaningEl.textContent = final.meaning;
+        }
+    }, 80);
+}
+
+// Search on Enter key
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') searchName();
+});
+
+// Initialize
+renderRanking();
+renderRecommendations();
+</script>
+</body>
+</html>
