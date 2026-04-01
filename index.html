@@ -231,6 +231,47 @@
             font-size: 12px;
             color: var(--gray-dark);
         }
+        /* My cat manage tab cards */
+        .mycat-manage-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            border: 2px solid var(--black);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            background: var(--gray-light);
+        }
+        .mycat-manage-card img {
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--black);
+        }
+        .mycat-manage-info { flex: 1; }
+        .mycat-manage-info .mm-name { font-family: 'Jua', sans-serif; font-size: 20px; }
+        .mycat-manage-info .mm-date { font-size: 12px; color: var(--gray-dark); margin-top: 2px; }
+        .mycat-manage-btns { display: flex; gap: 6px; flex-direction: column; }
+        .mycat-manage-btns button {
+            padding: 8px 16px;
+            border: 2px solid var(--black);
+            border-radius: 50px;
+            font-family: 'Jua', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            background: var(--white);
+            transition: all 0.2s;
+        }
+        .mycat-manage-btns button:hover { background: var(--black); color: var(--white); }
+        .mycat-manage-btns .del-btn { border-color: #cc4444; color: #cc4444; }
+        .mycat-manage-btns .del-btn:hover { background: #cc4444; color: var(--white); }
+        .mycat-empty {
+            text-align: center;
+            padding: 40px 16px;
+            color: var(--gray-dark);
+        }
+        .mycat-empty p { font-family: 'Jua', sans-serif; font-size: 16px; }
+
         .my-cat-card-actions {
             display: flex;
             gap: 8px;
@@ -889,9 +930,10 @@
     <main>
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('search')">동명이인</button>
+            <button class="tab-btn" onclick="switchTab('mycat')">내 고양이</button>
             <button class="tab-btn" onclick="switchTab('ranking')">인기 순위</button>
             <button class="tab-btn" onclick="switchTab('recommend')">이름 추천</button>
-            <button class="tab-btn" onclick="switchTab('gallery')">친구들 보기</button>
+            <button class="tab-btn" onclick="switchTab('gallery')">친구들</button>
         </div>
 
         <!-- Tab 1: Search / Same-name results -->
@@ -904,7 +946,16 @@
             </div>
         </div>
 
-        <!-- Tab 2: Ranking -->
+        <!-- Tab 2: My Cats -->
+        <div id="tab-mycat" class="tab-content">
+            <h2 class="section-title">🐱 내 고양이 관리</h2>
+            <div id="myCatManageList"></div>
+            <div style="text-align:center;margin-top:16px;">
+                <button class="hero-upload-btn" onclick="openUploadModal()" style="max-width:300px;">+ 고양이 추가 등록</button>
+            </div>
+        </div>
+
+        <!-- Tab 3: Ranking -->
         <div id="tab-ranking" class="tab-content">
             <h2 class="section-title">👑 여기서 가장 많이 등록된 이름</h2>
             <ul class="ranking-list" id="rankingList"></ul>
@@ -1092,7 +1143,7 @@ function lockContent() {
 function switchTab(tabName) {
     // Don't allow tab switch if locked
     if (document.getElementById('contentLockWrapper').classList.contains('locked')) return;
-    const tabs = ['search', 'ranking', 'recommend', 'gallery'];
+    const tabs = ['search', 'mycat', 'ranking', 'recommend', 'gallery'];
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
         btn.classList.toggle('active', tabs[i] === tabName);
     });
@@ -1100,6 +1151,7 @@ function switchTab(tabName) {
     document.getElementById('tab-' + tabName).classList.add('active');
     if (tabName === 'gallery') renderGallery();
     if (tabName === 'ranking') renderRanking();
+    if (tabName === 'mycat') renderMyCatManage();
 }
 
 // ============ NAME STATS (from registered cats) ============
@@ -1681,6 +1733,36 @@ function getMyCatIds() {
 }
 function saveMyCatIds(ids) { localStorage.setItem('nyang_my_ids', JSON.stringify(ids)); }
 
+function renderMyCatManage() {
+    const cats = getCats();
+    const myIds = getMyCatIds();
+    const el = document.getElementById('myCatManageList');
+
+    if (myIds.length === 0) {
+        el.innerHTML = `<div class="mycat-empty">
+            <p>아직 등록한 고양이가 없어요!</p>
+            <p style="font-size:13px;color:var(--gray-dark);margin-top:6px;">위에서 고양이를 등록해보세요</p>
+        </div>`;
+        return;
+    }
+
+    el.innerHTML = myIds.map(idx => {
+        const cat = cats[idx];
+        if (!cat) return '';
+        return `<div class="mycat-manage-card">
+            <img src="${cat.image}" alt="${cat.name}">
+            <div class="mycat-manage-info">
+                <div class="mm-name">${cat.name}</div>
+                <div class="mm-date">${cat.date}</div>
+            </div>
+            <div class="mycat-manage-btns">
+                <button onclick="editMyCatWithCrop(${idx})">📷 사진 수정</button>
+                <button class="del-btn" onclick="deleteMyCat(${idx})">삭제</button>
+            </div>
+        </div>`;
+    }).filter(Boolean).join('');
+}
+
 function editMyCatWithCrop(idx) {
     const input = document.createElement('input');
     input.type = 'file';
@@ -1716,6 +1798,7 @@ function editMyCatWithCrop(idx) {
                     }
                     renderHeroPreview();
                     renderMyCatCard();
+                    renderMyCatManage();
                     renderGallery();
                     showSameNamePreview(cats[idx].name);
                     showToast('사진이 수정되었어요!');
@@ -1746,6 +1829,7 @@ function deleteMyCat(idx) {
     renderGallery();
 
     renderHeroPreview();
+    renderMyCatManage();
 
     // If no more cats registered, lock content again and reset hero
     if (myIds.length === 0) {
