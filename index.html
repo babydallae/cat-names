@@ -1870,6 +1870,18 @@ function restoreMyCat() {
         if (cats.length > 0) {
             myCat = { name: cats[0].name, image: cats[0].image };
             localStorage.setItem('nyang_my_cat', JSON.stringify(myCat));
+            // Also restore my IDs if empty
+            if (getMyCatIds().length === 0) {
+                saveMyCatIds(cats.map((_, i) => i));
+            }
+        }
+    }
+
+    // Ensure my IDs are set if myCat exists but IDs are empty
+    if (myCat && getMyCatIds().length === 0) {
+        const cats = getCats();
+        if (cats.length > 0) {
+            saveMyCatIds(cats.map((_, i) => i));
         }
     }
 
