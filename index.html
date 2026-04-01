@@ -930,10 +930,10 @@
     <main>
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('search')">동명이인</button>
-            <button class="tab-btn" onclick="switchTab('mycat')">내 고양이</button>
-            <button class="tab-btn" onclick="switchTab('ranking')">인기 순위</button>
+            <button class="tab-btn" onclick="switchTab('ranking')">이름 순위</button>
             <button class="tab-btn" onclick="switchTab('recommend')">이름 추천</button>
             <button class="tab-btn" onclick="switchTab('gallery')">친구들</button>
+            <button class="tab-btn" onclick="switchTab('mycat')">내 고양이</button>
         </div>
 
         <!-- Tab 1: Search / Same-name results -->
@@ -957,7 +957,7 @@
 
         <!-- Tab 3: Ranking -->
         <div id="tab-ranking" class="tab-content">
-            <h2 class="section-title">👑 여기서 가장 많이 등록된 이름</h2>
+            <h2 class="section-title">👑 이름 순위</h2>
             <ul class="ranking-list" id="rankingList"></ul>
         </div>
 
@@ -1017,17 +1017,6 @@
                 <div id="myCatsList"></div>
             </div>
 
-            <h2 class="section-title">🐾 우리 동네 친구들</h2>
-            <div class="gallery-stats">
-                <div class="gallery-stat">
-                    <div class="num" id="totalCats">0</div>
-                    <div class="label">마리</div>
-                </div>
-                <div class="gallery-stat">
-                    <div class="num" id="totalNames">0</div>
-                    <div class="label">가지 이름</div>
-                </div>
-            </div>
             <div class="gallery" id="gallery"></div>
         </div>
     </main>
@@ -1143,7 +1132,7 @@ function lockContent() {
 function switchTab(tabName) {
     // Don't allow tab switch if locked
     if (document.getElementById('contentLockWrapper').classList.contains('locked')) return;
-    const tabs = ['search', 'mycat', 'ranking', 'recommend', 'gallery'];
+    const tabs = ['search', 'ranking', 'recommend', 'gallery', 'mycat'];
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
         btn.classList.toggle('active', tabs[i] === tabName);
     });
@@ -1540,7 +1529,7 @@ function renderRanking() {
     if (stats.length === 0) {
         list.innerHTML = `<div style="text-align:center;padding:40px;color:var(--gray-dark);">
             <p style="font-family:'Jua';font-size:16px;">아직 등록된 고양이가 없어요!</p>
-            <p style="font-size:13px;margin-top:6px;">고양이를 등록하면 인기 순위가 만들어져요 🐱</p>
+            <p style="font-size:13px;margin-top:6px;">고양이를 등록하면 이름 순위가 만들어져요 🐱</p>
         </div>`;
         return;
     }
@@ -1674,8 +1663,7 @@ function suggestNewName() {
 function renderGallery() {
     const cats = getCats();
     const uniqueNames = new Set(cats.map(c => c.name));
-    document.getElementById('totalCats').textContent = cats.length;
-    document.getElementById('totalNames').textContent = uniqueNames.size;
+    // Stats removed from UI but keep variables for search
 
     // My cats section
     const myCatIds = getMyCatIds();
