@@ -448,6 +448,149 @@
             font-size: 18px;
         }
 
+        /* Upload / Gallery tab */
+        .upload-area {
+            border: 3px dashed var(--gray-mid);
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 24px;
+        }
+
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--black);
+            background: var(--gray-light);
+        }
+
+        .upload-area .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .upload-area p {
+            font-family: 'Jua', sans-serif;
+            font-size: 16px;
+            color: var(--gray-dark);
+        }
+
+        .upload-form {
+            display: none;
+            background: var(--gray-light);
+            border: 2px solid var(--black);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            animation: fadeUp 0.3s ease;
+        }
+
+        .upload-form.show { display: block; }
+
+        .upload-preview {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 16px;
+            margin: 0 auto 16px;
+            display: block;
+            border: 2px solid var(--black);
+        }
+
+        .upload-form input[type="text"] {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid var(--black);
+            border-radius: 50px;
+            font-family: 'Jua', sans-serif;
+            font-size: 18px;
+            outline: none;
+            margin-bottom: 12px;
+        }
+
+        .upload-form button.submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--black);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            font-family: 'Jua', sans-serif;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .upload-form button.submit-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .gallery-card {
+            border: 2px solid var(--black);
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--white);
+            transition: transform 0.2s;
+            animation: fadeUp 0.3s ease;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .gallery-card img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .gallery-card .card-info {
+            padding: 12px;
+            text-align: center;
+        }
+
+        .gallery-card .card-name {
+            font-family: 'Jua', sans-serif;
+            font-size: 18px;
+        }
+
+        .gallery-card .card-date {
+            font-size: 12px;
+            color: var(--gray-dark);
+            margin-top: 4px;
+        }
+
+        .gallery-stats {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .gallery-stat {
+            text-align: center;
+            padding: 16px 24px;
+            background: var(--gray-light);
+            border-radius: 16px;
+            border: 2px solid var(--black);
+        }
+
+        .gallery-stat .num {
+            font-family: 'Jua', sans-serif;
+            font-size: 28px;
+        }
+
+        .gallery-stat .label {
+            font-size: 13px;
+            color: var(--gray-dark);
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -497,6 +640,7 @@
         <button class="tab-btn active" onclick="switchTab('search')">이름 검색</button>
         <button class="tab-btn" onclick="switchTab('ranking')">인기 순위</button>
         <button class="tab-btn" onclick="switchTab('recommend')">장수 이름 추천</button>
+        <button class="tab-btn" onclick="switchTab('gallery')">우리집 냥이</button>
     </div>
 
     <!-- Tab 1: Search Results -->
@@ -542,6 +686,38 @@
             <div class="random-result" id="randomResult"></div>
             <div class="random-meaning" id="randomMeaning"></div>
         </div>
+    </div>
+
+    <!-- Tab 4: Upload & Gallery -->
+    <div id="tab-gallery" class="tab-content">
+        <h2 class="section-title"><span class="icon">📸</span> 우리집 고양이 자랑하기</h2>
+
+        <div class="gallery-stats">
+            <div class="gallery-stat">
+                <div class="num" id="totalCats">0</div>
+                <div class="label">등록된 냥이</div>
+            </div>
+            <div class="gallery-stat">
+                <div class="num" id="totalNames">0</div>
+                <div class="label">고유 이름</div>
+            </div>
+        </div>
+
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+            <div class="icon">📷</div>
+            <p>고양이 사진을 올려주세요!</p>
+            <p style="font-size:13px;margin-top:4px;">클릭하거나 사진을 드래그하세요</p>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
+
+        <div class="upload-form" id="uploadForm">
+            <img id="uploadPreview" class="upload-preview" src="" alt="미리보기">
+            <input type="text" id="catNameInput" placeholder="고양이 이름을 입력하세요">
+            <button class="submit-btn" onclick="submitCat()">등록하기</button>
+        </div>
+
+        <h3 class="section-title" style="font-size:18px;"><span class="icon">🐾</span> 최근 등록된 냥이들</h3>
+        <div class="gallery" id="gallery"></div>
     </div>
 </main>
 
@@ -700,11 +876,12 @@ const maxCount = catNames[0].count;
 
 function switchTab(tabName) {
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-        const tabs = ['search', 'ranking', 'recommend'];
+        const tabs = ['search', 'ranking', 'recommend', 'gallery'];
         btn.classList.toggle('active', tabs[i] === tabName);
     });
     document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
     document.getElementById('tab-' + tabName).classList.add('active');
+    if (tabName === 'gallery') renderGallery();
 }
 
 function searchName() {
@@ -860,9 +1037,117 @@ document.getElementById('searchInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') searchName();
 });
 
+// ============ GALLERY (localStorage) ============
+
+function getCats() {
+    try {
+        return JSON.parse(localStorage.getItem('nyang_cats') || '[]');
+    } catch { return []; }
+}
+
+function saveCats(cats) {
+    localStorage.setItem('nyang_cats', JSON.stringify(cats));
+}
+
+// Drag & drop
+const uploadArea = document.getElementById('uploadArea');
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+uploadArea.addEventListener('drop', e => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+
+function handleFileSelect(e) {
+    if (e.target.files.length) handleFile(e.target.files[0]);
+}
+
+let currentImageData = null;
+
+function handleFile(file) {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        // Resize to save localStorage space
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const maxSize = 400;
+            let w = img.width, h = img.height;
+            if (w > h) { h = h * maxSize / w; w = maxSize; }
+            else { w = w * maxSize / h; h = maxSize; }
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            currentImageData = canvas.toDataURL('image/jpeg', 0.7);
+            document.getElementById('uploadPreview').src = currentImageData;
+            document.getElementById('uploadForm').classList.add('show');
+            document.getElementById('catNameInput').focus();
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function submitCat() {
+    const name = document.getElementById('catNameInput').value.trim();
+    if (!name || !currentImageData) return;
+
+    const cats = getCats();
+    cats.unshift({
+        name: name,
+        image: currentImageData,
+        date: new Date().toISOString().slice(0, 10)
+    });
+
+    // Keep max 50 to avoid localStorage limits
+    if (cats.length > 50) cats.length = 50;
+
+    saveCats(cats);
+    currentImageData = null;
+    document.getElementById('uploadForm').classList.remove('show');
+    document.getElementById('catNameInput').value = '';
+    document.getElementById('fileInput').value = '';
+    renderGallery();
+}
+
+function renderGallery() {
+    const cats = getCats();
+    const uniqueNames = new Set(cats.map(c => c.name));
+    document.getElementById('totalCats').textContent = cats.length;
+    document.getElementById('totalNames').textContent = uniqueNames.size;
+
+    const gallery = document.getElementById('gallery');
+    if (cats.length === 0) {
+        gallery.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-dark);">
+                <p style="font-family:'Jua';font-size:18px;">아직 등록된 냥이가 없어요!</p>
+                <p style="font-size:14px;margin-top:8px;">위에서 사진을 올려주세요 📷</p>
+            </div>
+        `;
+        return;
+    }
+
+    gallery.innerHTML = cats.map((cat, i) => `
+        <div class="gallery-card" style="animation-delay:${i * 0.05}s">
+            <img src="${cat.image}" alt="${cat.name}" loading="lazy">
+            <div class="card-info">
+                <div class="card-name">${cat.name}</div>
+                <div class="card-date">${cat.date}</div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Enter key for cat name submit
+document.getElementById('catNameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitCat();
+});
+
 // Initialize
 renderRanking();
 renderRecommendations();
+renderGallery();
 </script>
 </body>
 </html>
